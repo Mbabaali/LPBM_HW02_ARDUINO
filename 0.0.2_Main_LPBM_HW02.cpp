@@ -419,174 +419,176 @@ void loop()
 
     boolean quitter = false;
 
-    while (SerialUSB.available() && !finReception)
-    {
-        /**
-     * Cette boucle s'active si l'arduino commence à recevoir des données sur son port uart (données envoyé par la pi). on receptionne les données sous forme 
-     * de string (inputString), puis lorsque la reception est fini, on analyse la chaine de caractère. selon le format suivant :
-     * ->la première lettre est un s : l'user a "start" l'acquisition, on reçoit donc les paramètres de time_awake et time_sleep
-     * ->la première lettre est un "p" : l'user a mis en pause l'acquisition : il faut donc....
-     * 
-     */
-        // get the new byte:
-        char inChar = (char)SerialUSB.read();
-        // add it to the inputString:
-        inputString += inChar;
-        // if the incoming character is a newline, set a flag so the main loop can
-        // do something about it:
-        if (inChar == '\n')
-        {
-            finReception = true;
-        }
-        if (finReception)
-        {
-            Serial.print("inputString: ");
-            Serial.println(inputString);
-            switch (inputString[0])
-            {
-            /**
-         * On regarde la première lettre des données reçues
-         */
-            case 's':
+    // while (SerialUSB.available() && !finReception)
+    // {
+    //     /**
+    //  * Cette boucle s'active si l'arduino commence à recevoir des données sur son port uart (données envoyé par la pi). on receptionne les données sous forme 
+    //  * de string (inputString), puis lorsque la reception est fini, on analyse la chaine de caractère. selon le format suivant :
+    //  * ->la première lettre est un s : l'user a "start" l'acquisition, on reçoit donc les paramètres de time_awake et time_sleep
+    //  * ->la première lettre est un "p" : l'user a mis en pause l'acquisition : il faut donc....
+    //  * 
+    //  */
+    //     // get the new byte:
+    //     char inChar = (char)SerialUSB.read();
+    //     // add it to the inputString:
+    //     inputString += inChar;
+    //     // if the incoming character is a newline, set a flag so the main loop can
+    //     // do something about it:
+    //     if (inChar == '\n')
+    //     {
+    //         finReception = true;
+    //     }
+    //     if (finReception)
+    //     {
+    //         Serial.print("inputString: ");
+    //         Serial.println(inputString);
+    //         switch (inputString[0])
+    //         {
+    //         /**
+    //      * On regarde la première lettre des données reçues
+    //      */
+    //         case 's':
 
-                Serial.print("inputString: ");
-                Serial.println(inputString);
+    //             Serial.print("inputString: ");
+    //             Serial.println(inputString);
 
-                cycle[0].time_awake_str = inputString.substring(1, 7);
-                cycle[0].time_sleep_str = inputString.substring(7, 13);
-                cycle[0].time_awake = cycle[0].time_awake_str.toInt();
-                cycle[0].time_sleep = cycle[0].time_sleep_str.toInt();
+    //             cycle[0].time_awake_str = inputString.substring(1, 7);
+    //             cycle[0].time_sleep_str = inputString.substring(7, 13);
+    //             cycle[0].time_awake = cycle[0].time_awake_str.toInt();
+    //             cycle[0].time_sleep = cycle[0].time_sleep_str.toInt();
 
-                // Serial.print("cycle[0].time_awake_str: ");
-                // Serial.println(cycle[0].time_awake_str);
-                // Serial.print("cycle[0].time_sleep_str: ");
-                // Serial.println(cycle[0].time_sleep_str);
+    //             // Serial.print("cycle[0].time_awake_str: ");
+    //             // Serial.println(cycle[0].time_awake_str);
+    //             // Serial.print("cycle[0].time_sleep_str: ");
+    //             // Serial.println(cycle[0].time_sleep_str);
 
-                cycle[1].time_awake_str = inputString.substring(13, 19);
-                cycle[1].time_sleep_str = inputString.substring(19, 25);
-                cycle[1].time_awake = cycle[1].time_awake_str.toInt();
-                cycle[1].time_sleep = cycle[1].time_sleep_str.toInt();
+    //             cycle[1].time_awake_str = inputString.substring(13, 19);
+    //             cycle[1].time_sleep_str = inputString.substring(19, 25);
+    //             cycle[1].time_awake = cycle[1].time_awake_str.toInt();
+    //             cycle[1].time_sleep = cycle[1].time_sleep_str.toInt();
 
-                // Serial.print("cycle[1].time_awake_str: ");
-                // Serial.println(cycle[1].time_awake_str);
-                // Serial.print("cycle[1].time_sleep_str: ");
-                // Serial.println(cycle[1].time_sleep_str);
+    //             // Serial.print("cycle[1].time_awake_str: ");
+    //             // Serial.println(cycle[1].time_awake_str);
+    //             // Serial.print("cycle[1].time_sleep_str: ");
+    //             // Serial.println(cycle[1].time_sleep_str);
 
-                cycle[2].time_awake_str = inputString.substring(25, 31);
-                cycle[2].time_sleep_str = inputString.substring(31, 37);
-                cycle[2].time_awake = cycle[2].time_awake_str.toInt();
-                cycle[2].time_sleep = cycle[2].time_sleep_str.toInt();
+    //             cycle[2].time_awake_str = inputString.substring(25, 31);
+    //             cycle[2].time_sleep_str = inputString.substring(31, 37);
+    //             cycle[2].time_awake = cycle[2].time_awake_str.toInt();
+    //             cycle[2].time_sleep = cycle[2].time_sleep_str.toInt();
 
-                // Serial.print("cycle[2].time_awake_str: ");
-                // Serial.println(cycle[2].time_awake_str);
-                // Serial.print("cycle[2].time_sleep_str: ");
-                // Serial.println(cycle[2].time_sleep_str);
-                /*conteneur=inputString.substring(37,40);
-          f_acquisition=conteneur.toInt();
-          f_acquisition=f_acquisition*1000;
-          f_acquisition-=50;
-          conteneur="";*/
+    //             // Serial.print("cycle[2].time_awake_str: ");
+    //             // Serial.println(cycle[2].time_awake_str);
+    //             // Serial.print("cycle[2].time_sleep_str: ");
+    //             // Serial.println(cycle[2].time_sleep_str);
+    //             /*conteneur=inputString.substring(37,40);
+    //       f_acquisition=conteneur.toInt();
+    //       f_acquisition=f_acquisition*1000;
+    //       f_acquisition-=50;
+    //       conteneur="";*/
 
-                conteneur = inputString.substring(37, 38);
-                etat_start = conteneur.toInt();
-                cycle_en_cours = 0;
-                flag_cycle = 0;
-                rep_en_cours = 1;
+    //             conteneur = inputString.substring(37, 38);
+    //             etat_start = conteneur.toInt();
+    //             cycle_en_cours = 0;
+    //             flag_cycle = 0;
+    //             rep_en_cours = 1;
 
-                Serial.print("etat_start: ");
-                Serial.println(etat_start);
+    //             Serial.print("etat_start: ");
+    //             Serial.println(etat_start);
 
-                cycle[0].nb_rep_str = inputString.substring(38, 40);
-                cycle[1].nb_rep_str = inputString.substring(40, 42);
-                cycle[2].nb_rep_str = inputString.substring(42, 44);
-                cycle[0].nb_rep = cycle[0].nb_rep_str.toInt();
-                cycle[1].nb_rep = cycle[1].nb_rep_str.toInt();
-                cycle[2].nb_rep = cycle[2].nb_rep_str.toInt();
+    //             cycle[0].nb_rep_str = inputString.substring(38, 40);
+    //             cycle[1].nb_rep_str = inputString.substring(40, 42);
+    //             cycle[2].nb_rep_str = inputString.substring(42, 44);
+    //             cycle[0].nb_rep = cycle[0].nb_rep_str.toInt();
+    //             cycle[1].nb_rep = cycle[1].nb_rep_str.toInt();
+    //             cycle[2].nb_rep = cycle[2].nb_rep_str.toInt();
 
-                COURANT_MAX.amax_str = inputString.substring(45, 47);
+    //             COURANT_MAX.amax_str = inputString.substring(45, 47);
 
 
-                Serial.print("\n\nLa valeur lu du courant max vaut: ");
-                Serial.println(COURANT_MAX.amax_str);
+    //             Serial.print("\n\nLa valeur lu du courant max vaut: ");
+    //             Serial.println(COURANT_MAX.amax_str);
 
-                Serial.print("cycle[0].nb_rep_str: ");
-                Serial.println(cycle[0].nb_rep_str);
-                Serial.print("cycle[1].nb_rep_str ");
-                Serial.println(cycle[1].nb_rep_str);
-                Serial.print("cycle[2].nb_rep_str ");
-                Serial.println(cycle[2].nb_rep_str);
+    //             Serial.print("cycle[0].nb_rep_str: ");
+    //             Serial.println(cycle[0].nb_rep_str);
+    //             Serial.print("cycle[1].nb_rep_str ");
+    //             Serial.println(cycle[1].nb_rep_str);
+    //             Serial.print("cycle[2].nb_rep_str ");
+    //             Serial.println(cycle[2].nb_rep_str);
 
-                //DEBUG//
-                /*
-          SerialUSB.print("awake 1 : ");
-          SerialUSB.println(cycle[0].time_awake);
-          SerialUSB.print("sleep 1 : ");
-          SerialUSB.println(cycle[0].time_sleep);
+    //             //DEBUG//
+    //             /*
+    //       SerialUSB.print("awake 1 : ");
+    //       SerialUSB.println(cycle[0].time_awake);
+    //       SerialUSB.print("sleep 1 : ");
+    //       SerialUSB.println(cycle[0].time_sleep);
           
-          SerialUSB.print("awake 2 : ");
-          SerialUSB.println(cycle[1].time_awake);
-          SerialUSB.print("sleep 2 : ");
-          SerialUSB.println(cycle[1].time_sleep);
+    //       SerialUSB.print("awake 2 : ");
+    //       SerialUSB.println(cycle[1].time_awake);
+    //       SerialUSB.print("sleep 2 : ");
+    //       SerialUSB.println(cycle[1].time_sleep);
 
-          SerialUSB.print("awake 3 : ");
-          SerialUSB.println(cycle[2].time_awake);
-          SerialUSB.print("sleep 3 : ");
-          SerialUSB.println(cycle[2].time_sleep);
+    //       SerialUSB.print("awake 3 : ");
+    //       SerialUSB.println(cycle[2].time_awake);
+    //       SerialUSB.print("sleep 3 : ");
+    //       SerialUSB.println(cycle[2].time_sleep);
 
-          SerialUSB.print("frequence : ");
-          SerialUSB.println(f_acquisition);
+    //       SerialUSB.print("frequence : ");
+    //       SerialUSB.println(f_acquisition);
 
-          SerialUSB.print("start : ");
-          SerialUSB.println(etat_start);
+    //       SerialUSB.print("start : ");
+    //       SerialUSB.println(etat_start);
 
-          SerialUSB.print("repetition 1er cycle : ");
-          SerialUSB.println(cycle[0].nb_rep);
-          SerialUSB.print("repetition 2eme cycle : ");
-          SerialUSB.println(cycle[1].nb_rep);
-          SerialUSB.print("repetition 3eme cycle : ");
-          SerialUSB.println(cycle[2].nb_rep);
-          */
+    //       SerialUSB.print("repetition 1er cycle : ");
+    //       SerialUSB.println(cycle[0].nb_rep);
+    //       SerialUSB.print("repetition 2eme cycle : ");
+    //       SerialUSB.println(cycle[1].nb_rep);
+    //       SerialUSB.print("repetition 3eme cycle : ");
+    //       SerialUSB.println(cycle[2].nb_rep);
+    //       */
 
-                if (etat_start == 1)
-                {
-                    changerEtatACC(HIGH);
-                }
-                if (etat_start == 0)
-                {
-                    changerEtatACC(LOW);
-                }
+    //             if (etat_start == 1)
+    //             {
+    //                 changerEtatACC(HIGH);
+    //             }
+    //             if (etat_start == 0)
+    //             {
+    //                 changerEtatACC(LOW);
+    //             }
 
-                nb_cycle = verif_nb_cycle();
-                /*SerialUSB.print("nb cycle : ");
-                 SerialUSB.println(nb_cycle);*/
-                uploadconfig = true;
-                SerialUSB.print("ok\n");
-                Serial.println("OK TRANSMISSION");
-                break;
+    //             nb_cycle = verif_nb_cycle();
+    //             /*SerialUSB.print("nb cycle : ");
+    //              SerialUSB.println(nb_cycle);*/
+    //             uploadconfig = true;
+    //             SerialUSB.print("ok\n");
+    //             Serial.println("OK TRANSMISSION");
+    //             break;
 
-            case 'p':
-                uploadconfig = false;
-                changerEtatACC(LOW);
-                cycle_en_cours = 0;
-                flag_cycle = 0;
+    //         case 'p':
+    //             uploadconfig = false;
+    //             changerEtatACC(LOW);
+    //             cycle_en_cours = 0;
+    //             flag_cycle = 0;
 
-                SerialUSB.print("ok\n");
-                break;
+    //             SerialUSB.print("ok\n");
+    //             break;
 
-            case 'd':
-                SerialUSB.print("d");
-                SerialUSB.print("test debug");
-                SerialUSB.print("\n");
+    //         case 'd':
+    //             SerialUSB.print("d");
+    //             SerialUSB.print("test debug");
+    //             SerialUSB.print("\n");
 
-            default:
-                SerialUSB.print("problème : l'arduino ne reconnait pas la donnée reçue : ");
-                SerialUSB.println(inputString);
-                break;
-            }
-            inputString = "";
-            finReception = false;
-        }
-    }
+    //         default:
+    //             SerialUSB.print("problème : l'arduino ne reconnait pas la donnée reçue : ");
+    //             SerialUSB.println(inputString);
+    //             break;
+    //         }
+    //         inputString = "";
+    //         finReception = false;
+    //     }
+    // }
+
+    COURANT_MAX.amax = 10.0;
 
     SelectChannel(0);
     delay(150);
@@ -760,7 +762,7 @@ float conversion_channel_power_out(long result)
 
 void CS_ADC(int STATE)
 {
-    int CSADC_channel[4] = {CSADC1, CSADC2, CSADC3, CSADC4, CSADC5, CSADC6};
+    int CSADC_channel[6] = {CSADC1, CSADC2, CSADC3, CSADC4, CSADC5, CSADC6};
 
     for (unsigned char i = 0; i < 4; i++)
     {
@@ -797,7 +799,7 @@ void SelectChannel(int n)
 {
     // Tableau des Codes Hexa sélection de channel
     int channel[8] = {0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F}; //
-    int CSADC_channel[4] = {CSADC1, CSADC2, CSADC3, CSADC4, CSADC5, CSADC6};
+    int CSADC_channel[6] = {CSADC1, CSADC2, CSADC3, CSADC4, CSADC5, CSADC6};
 
     for (unsigned char i = 0; i < 4; i++)
     {
