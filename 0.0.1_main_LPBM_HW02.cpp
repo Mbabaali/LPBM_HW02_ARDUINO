@@ -760,7 +760,7 @@ float conversion_channel_power_out(long result)
 
 void CS_ADC(int STATE)
 {
-    int CSADC_channel[4] = {CSADC1, CSADC2, CSADC3, CSADC4, CSADC5, CSADC6};
+    int CSADC_channel[6] = {CSADC1, CSADC2, CSADC3, CSADC4, CSADC5, CSADC6};
 
     for (unsigned char i = 0; i < 4; i++)
     {
@@ -790,6 +790,26 @@ void CS_ADC(int STATE)
     A new conversion cycle is initiated following the data read cycle with the analog
     input tied to the newly selected channel.
 */
+
+    /**
+     * A single CS signal drives both the multiplexer CSMUX and converter CSADC inputs. 
+     * This common signal is used to monitor and control the state of the conversion as well as enable the channel selection.
+     * 
+     * The serial clock mode is selected on the falling edge of CSADC. To select the external serial clock mode, 
+     * the serial clock pin (SCK) must be LOW during each CSADC falling edge.
+     * 
+     * The serial data output pin (SDO) is Hi-Z as long as CSADC is HIGH. At any time during the conversion cycle, 
+     * CSADC may be pulled LOW in order to monitor the state of the converter. While CSADC is LOW, EOC is output to the SDO pin. 
+     * EOC = 1 while a conversion is in progress and EOC = 0 if the device is in the sleep state. Independent of CSADC, the device automatically enters 
+     * the sleep state once the conversion is complete. While the device is in the sleep state and CSADC is HIGH, the power consumption is reduced an order of magnitude.
+     * 
+     * While the device is in the sleep state, prior to entering the data output state, the user may program the multiplexer. 
+     * As shown in Figure 13, the multiplexer channel is selected by serial shifting a 4-bit word into the DIN pin on the rising edge of CLK (CLK is tied to SCK). 
+     * The first bit is an enable bit that must be HIGH in order to program a channel. The next three bits determine which channel is selected, see Table 3. 
+     * On the falling edge of CSMUX, the new channel is selected and will be valid for the first conversion performed following the data output state. 
+     * Clock signals applied to the CLK pin while CSMUX is LOW (during the data output state) will have no effect on the channel selection. Furthermore, 
+     * if DIN is held LOW or CLK is held LOW during the sleep state, the channel selection is unchanged.
+     */
 /////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////FONCTION SELECTION CHANNEL ////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -797,7 +817,7 @@ void SelectChannel(int n)
 {
     // Tableau des Codes Hexa sélection de channel
     int channel[8] = {0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F}; //
-    int CSADC_channel[4] = {CSADC1, CSADC2, CSADC3, CSADC4, CSADC5, CSADC6};
+    int CSADC_channel[6] = {CSADC1, CSADC2, CSADC3, CSADC4, CSADC5, CSADC6};
 
     for (unsigned char i = 0; i < 4; i++)
     {

@@ -317,18 +317,18 @@ void setup()
 
     // Initialisation des sorties Chip Select
     digitalWrite(CSADC1, HIGH);
-    digitalWrite(CSADC2, HIGH);
-    digitalWrite(CSADC3, HIGH);
-    digitalWrite(CSADC4, HIGH);
-    digitalWrite(CSADC5, HIGH);
-    digitalWrite(CSADC6, HIGH);
+    // digitalWrite(CSADC2, HIGH);
+    // digitalWrite(CSADC3, HIGH);
+    // digitalWrite(CSADC4, HIGH);
+    // digitalWrite(CSADC5, HIGH);
+    // digitalWrite(CSADC6, HIGH);
 
     pinMode(CSADC1, OUTPUT);
-    pinMode(CSADC2, OUTPUT);
-    pinMode(CSADC3, OUTPUT);
-    pinMode(CSADC4, OUTPUT);
-    pinMode(CSADC5, OUTPUT);
-    pinMode(CSADC6, OUTPUT);
+    // pinMode(CSADC2, OUTPUT);
+    // pinMode(CSADC3, OUTPUT);
+    // pinMode(CSADC4, OUTPUT);
+    // pinMode(CSADC5, OUTPUT);
+    // pinMode(CSADC6, OUTPUT);
 
     // Initialisation des sorties de veille/éveil des produits CMD_ADC_DUT
     digitalWrite(CMD_ACC_DUT1, HIGH);
@@ -588,57 +588,58 @@ void loop()
     //     }
     // }
 
-    COURANT_MAX.amax = 10.0;
 
-    SelectChannel(0);
-    delay(150);
-    dut1.set_channel_UI(SpiReadChannelADC1());
-    dut2.set_channel_UI(SpiReadChannelADC2());
-    dut3.set_channel_UI(SpiReadChannelADC3());
-    dut4.set_channel_UI(SpiReadChannelADC4());
-    dut5.set_channel_UI(SpiReadChannelADC5());
-    dut6.set_channel_UI(SpiReadChannelADC6());
-    //
-    SelectChannel(1);
-    delay(150);
-    dut1.set_channel_MI(SpiReadChannelADC1());
-    dut2.set_channel_MI(SpiReadChannelADC2());
-    dut3.set_channel_MI(SpiReadChannelADC3());
-    dut4.set_channel_MI(SpiReadChannelADC4());
-    dut5.set_channel_MI(SpiReadChannelADC5());
-    dut6.set_channel_MI(SpiReadChannelADC6());
 
-    SelectChannel(2);
-    delay(150);
-    dut1.set_channel_I(SpiReadChannelADC1());
-    dut2.set_channel_I(SpiReadChannelADC2());
-    dut3.set_channel_I(SpiReadChannelADC3());
-    dut4.set_channel_I(SpiReadChannelADC4());
-    dut5.set_channel_I(SpiReadChannelADC5());
-    dut6.set_channel_I(SpiReadChannelADC6());
-    //
-    SelectChannel(3);
-    delay(150);
-    dut1.set_channel_PWR_DUT(SpiReadChannelADC1());
-    dut2.set_channel_PWR_DUT(SpiReadChannelADC2());
-    dut3.set_channel_PWR_DUT(SpiReadChannelADC3());
-    dut4.set_channel_PWR_DUT(SpiReadChannelADC4());
-    dut5.set_channel_PWR_DUT(SpiReadChannelADC5());
-    dut6.set_channel_PWR_DUT(SpiReadChannelADC6());
 
-    dut1.test_channel();
-    dut2.test_channel();
-    dut3.test_channel();
-    dut4.test_channel();
-    dut5.test_channel();
-    dut6.test_channel();
+    // SelectChannel(0);
+    // delay(150);
+    // dut1.set_channel_UI(SpiReadChannelADC1());
+    // dut2.set_channel_UI(SpiReadChannelADC2());
+    // dut3.set_channel_UI(SpiReadChannelADC3());
+    // dut4.set_channel_UI(SpiReadChannelADC4());
+    // dut5.set_channel_UI(SpiReadChannelADC5());
+    // dut6.set_channel_UI(SpiReadChannelADC6());
+    // //
+    // SelectChannel(1);
+    // delay(150);
+    // dut1.set_channel_MI(SpiReadChannelADC1());
+    // dut2.set_channel_MI(SpiReadChannelADC2());
+    // dut3.set_channel_MI(SpiReadChannelADC3());
+    // dut4.set_channel_MI(SpiReadChannelADC4());
+    // dut5.set_channel_MI(SpiReadChannelADC5());
+    // dut6.set_channel_MI(SpiReadChannelADC6());
 
-    dut1.assignation_valeurs_converties();
-    dut2.assignation_valeurs_converties();
-    dut3.assignation_valeurs_converties();
-    dut4.assignation_valeurs_converties();
-    dut5.assignation_valeurs_converties();
-    dut6.assignation_valeurs_converties();
+    // SelectChannel(2);
+    // delay(150);
+    // dut1.set_channel_I(SpiReadChannelADC1());
+    // dut2.set_channel_I(SpiReadChannelADC2());
+    // dut3.set_channel_I(SpiReadChannelADC3());
+    // dut4.set_channel_I(SpiReadChannelADC4());
+    // dut5.set_channel_I(SpiReadChannelADC5());
+    // dut6.set_channel_I(SpiReadChannelADC6());
+    // //
+    // SelectChannel(3);
+    // delay(150);
+    // dut1.set_channel_PWR_DUT(SpiReadChannelADC1());
+    // dut2.set_channel_PWR_DUT(SpiReadChannelADC2());
+    // dut3.set_channel_PWR_DUT(SpiReadChannelADC3());
+    // dut4.set_channel_PWR_DUT(SpiReadChannelADC4());
+    // dut5.set_channel_PWR_DUT(SpiReadChannelADC5());
+    // dut6.set_channel_PWR_DUT(SpiReadChannelADC6());
+
+    // dut1.test_channel();
+    // dut2.test_channel();
+    // dut3.test_channel();
+    // dut4.test_channel();
+    // dut5.test_channel();
+    // dut6.test_channel();
+
+    // dut1.assignation_valeurs_converties();
+    // dut2.assignation_valeurs_converties();
+    // dut3.assignation_valeurs_converties();
+    // dut4.assignation_valeurs_converties();
+    // dut5.assignation_valeurs_converties();
+    // dut6.assignation_valeurs_converties();
 
     // dut1.test_assignation_valeurs_converties();
     // dut2.test_assignation_valeurs_converties();
@@ -647,7 +648,62 @@ void loop()
     // dut5.test_assignation_valeurs_converties();
     // dut6.test_assignation_valeurs_converties();
 
-    EnvoiTrame(dut1, dut2, dut3, dut4, dut5, dut6);
+
+    // Tableau des Codes Hexa sélection de channel
+    int channel[8] = {0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F};
+    int n=0;
+    long result = 0;
+
+
+    // Chip Select à l'état haut pour la sélection du channel
+
+    digitalWrite(CSADC1, HIGH); // U
+    digitalWrite(CSADC1, LOW);
+
+    while(SCK == 0)
+    {
+        ;
+    }
+
+    // Envoie SPI de l'adresse ADC pour le channel souhaité
+    digitalWrite(CSADC1, HIGH);
+    SPI.transfer(channel[n]);
+ 
+    
+
+    digitalWrite(CSADC1, LOW);
+
+    for(int i=0; i<24; i++)
+    {
+        //SPI.transfer(channel[0]);
+    }
+
+    // Attente de la fin de conversion
+    // Observation du passage de MISO à zéro
+    while (MISO == HIGH)
+        ; //tourne dans le vide tant que MISO n'est pas égale à 0
+
+    // Récupération des trois octets du résultat
+    // Récupération de l'octet B1
+    result = SPI.transfer(0xff); //SerialUSB.println(result,BIN);
+    result = result << 8;        //SerialUSB.println(result,BIN);
+    // Récupération de l'octet B2
+    result = result | SPI.transfer(0xff); //SerialUSB.println(result,BIN);
+    result = result << 8;                 //SerialUSB.println(result,BIN);
+    // Récupération de l'octet B3
+    result = result | SPI.transfer(0xff); //SerialUSB.println(result,BIN);
+    // Supression des 4bits de poids forts, conservation des 20bits de données
+    result = 0x0fffff & result; //SerialUSB.println(result,BIN);
+
+    // On termine la conversion en remettant le chip select à l'état haut
+
+    digitalWrite(CSADC1, HIGH);
+
+    // Renvoie du résultat
+    Serial.println(result);
+
+
+    // EnvoiTrame(dut1, dut2, dut3, dut4, dut5, dut6);
 
     Serial.println("\nFin LOOP \n\n\n");
 
@@ -792,6 +848,26 @@ void CS_ADC(int STATE)
     A new conversion cycle is initiated following the data read cycle with the analog
     input tied to the newly selected channel.
 */
+
+    /**
+     * A single CS signal drives both the multiplexer CSMUX and converter CSADC inputs. 
+     * This common signal is used to monitor and control the state of the conversion as well as enable the channel selection.
+     * 
+     * The serial clock mode is selected on the falling edge of CSADC. To select the external serial clock mode, 
+     * the serial clock pin (SCK) must be LOW during each CSADC falling edge.
+     * 
+     * The serial data output pin (SDO) is Hi-Z as long as CSADC is HIGH. At any time during the conversion cycle, 
+     * CSADC may be pulled LOW in order to monitor the state of the converter. While CSADC is LOW, EOC is output to the SDO pin. 
+     * EOC = 1 while a conversion is in progress and EOC = 0 if the device is in the sleep state. Independent of CSADC, the device automatically enters 
+     * the sleep state once the conversion is complete. While the device is in the sleep state and CSADC is HIGH, the power consumption is reduced an order of magnitude.
+     * 
+     * While the device is in the sleep state, prior to entering the data output state, the user may program the multiplexer. 
+     * As shown in Figure 13, the multiplexer channel is selected by serial shifting a 4-bit word into the DIN pin on the rising edge of CLK (CLK is tied to SCK). 
+     * The first bit is an enable bit that must be HIGH in order to program a channel. The next three bits determine which channel is selected, see Table 3. 
+     * On the falling edge of CSMUX, the new channel is selected and will be valid for the first conversion performed following the data output state. 
+     * Clock signals applied to the CLK pin while CSMUX is LOW (during the data output state) will have no effect on the channel selection. Furthermore, 
+     * if DIN is held LOW or CLK is held LOW during the sleep state, the channel selection is unchanged.
+     */
 /////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////FONCTION SELECTION CHANNEL ////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
