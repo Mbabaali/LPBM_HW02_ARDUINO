@@ -18,7 +18,6 @@
 #define CSADC5 3
 #define CSADC6 A5
 
-
 // Déclaration des pins de veille/éveil des produits
 #define CMD_ACC_DUT1 4
 #define CMD_ACC_DUT2 6
@@ -254,6 +253,8 @@ void EnvoiTrame(Dut Adc1, Dut Adc2, Dut Adc3, Dut Adc4, Dut Adc5, Dut Adc6);
 
 void HANDLER_CURRENT_MAX();
 
+void HANDLER_ACC();
+
 void state_CSADC(int etat);
 
 // Declaration des variables  gloobales
@@ -310,7 +311,8 @@ void setup()
     //  SPI.begin(CSADC3);
     //  SPI.begin(CSADC4);
 
-    SPI.setClockDivider(48); // Fréquence d'horloge de 1MHz
+    // Clock DUE = 84 MHz
+    SPI.setClockDivider(SPI_CLOCK_DIV32); // Fréquence d'horloge de 1MHz
 
     SPI.setBitOrder(MSBFIRST);  // Most Significant Bit First (Arduino.org pour plus de détails)
     SPI.setDataMode(SPI_MODE0); // SPI Mode_0
@@ -416,17 +418,16 @@ void loop()
     double channel_Vin = 0;
     boolean start_mesure = false;
 
-
     boolean quitter = false;
 
     // while (SerialUSB.available() && !finReception)
     // {
     //     /**
-    //  * Cette boucle s'active si l'arduino commence à recevoir des données sur son port uart (données envoyé par la pi). on receptionne les données sous forme 
+    //  * Cette boucle s'active si l'arduino commence à recevoir des données sur son port uart (données envoyé par la pi). on receptionne les données sous forme
     //  * de string (inputString), puis lorsque la reception est fini, on analyse la chaine de caractère. selon le format suivant :
     //  * ->la première lettre est un s : l'user a "start" l'acquisition, on reçoit donc les paramètres de time_awake et time_sleep
     //  * ->la première lettre est un "p" : l'user a mis en pause l'acquisition : il faut donc....
-    //  * 
+    //  *
     //  */
     //     // get the new byte:
     //     char inChar = (char)SerialUSB.read();
@@ -505,7 +506,6 @@ void loop()
 
     //             COURANT_MAX.amax_str = inputString.substring(45, 47);
 
-
     //             Serial.print("\n\nLa valeur lu du courant max vaut: ");
     //             Serial.println(COURANT_MAX.amax_str);
 
@@ -522,7 +522,7 @@ void loop()
     //       SerialUSB.println(cycle[0].time_awake);
     //       SerialUSB.print("sleep 1 : ");
     //       SerialUSB.println(cycle[0].time_sleep);
-          
+
     //       SerialUSB.print("awake 2 : ");
     //       SerialUSB.println(cycle[1].time_awake);
     //       SerialUSB.print("sleep 2 : ");
@@ -588,9 +588,6 @@ void loop()
     //     }
     // }
 
-
-
-
     // SelectChannel(0);
     // delay(150);
     // dut1.set_channel_UI(SpiReadChannelADC1());
@@ -648,35 +645,34 @@ void loop()
     // dut5.test_assignation_valeurs_converties();
     // dut6.test_assignation_valeurs_converties();
 
-
     // Tableau des Codes Hexa sélection de channel
     int channel[8] = {0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F};
-    int n=0;
+    int n = 0;
     long result = 0;
 
-
-    // Chip Select à l'état haut pour la sélection du channel
-
-    digitalWrite(CSADC1, HIGH); // U
-    digitalWrite(CSADC1, LOW);
-
-    while(SCK == 0)
+    for (n=0; n<7; n++)
     {
-        ;
-    }
+        // // Chip Select à l'état haut pour la sélection du channel
+    // digitalWrite(CSADC1, LOW);
+
+    digitalWrite(CSADC1, HIGH); // Uniquement le CSADC à 1 de l'ADC dont on souhaite mofidier le channel
 
     // Envoie SPI de l'adresse ADC pour le channel souhaité
-    digitalWrite(CSADC1, HIGH);
     SPI.transfer(channel[n]);
- 
-    
+
+    // On remet tous les CSADC à 0 pour les connecter en interne à l'ADC
+    // digitalWrite(CSADC1, LOW);
+
+    // digitalWrite(CSADC1, HIGH); // CSADC à 1, pas de sortie
+    // digitalWrite(CSADC1, LOW);  // Uniquement le CSADC à 1 de l'ADC dont on souhaite mofidier le channel
+
+    // // Chip Select à l'état haut pour la sélection du channel
+    // digitalWrite(CSADC1, HIGH);
+
+    //Tconv (160 ms voir page 5 data sheet)
+    delay(200);
 
     digitalWrite(CSADC1, LOW);
-
-    for(int i=0; i<24; i++)
-    {
-        //SPI.transfer(channel[0]);
-    }
 
     // Attente de la fin de conversion
     // Observation du passage de MISO à zéro
@@ -701,13 +697,13 @@ void loop()
 
     // Renvoie du résultat
     Serial.println(result);
-
+    }
 
     // EnvoiTrame(dut1, dut2, dut3, dut4, dut5, dut6);
 
     Serial.println("\nFin LOOP \n\n\n");
 
-    delay(50);
+    delay(500);
 }
 
 void HANDLER_CURRENT_MAX()
@@ -849,7 +845,7 @@ void CS_ADC(int STATE)
     input tied to the newly selected channel.
 */
 
-    /**
+/**
      * A single CS signal drives both the multiplexer CSMUX and converter CSADC inputs. 
      * This common signal is used to monitor and control the state of the conversion as well as enable the channel selection.
      * 

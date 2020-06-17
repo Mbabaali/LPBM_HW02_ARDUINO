@@ -665,7 +665,7 @@ void loop()
     long result = 0;
 
 
-    result = SPI.transfer(0x09); //SerialUSB.println(result,BIN);
+    result = SPI.transfer(0x00); //SerialUSB.println(result,BIN);
     Serial.println(result, BIN);
     result = result << 8;        //SerialUSB.println(result,BIN);
     Serial.println(result,BIN);
