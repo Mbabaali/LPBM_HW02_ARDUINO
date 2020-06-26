@@ -314,34 +314,34 @@ void setup()
     SPI.setDataMode(SPI_MODE0); // SPI Mode_0
 
     // Initialisation des sorties Chip Select
-    // digitalWrite(CSADC1, HIGH);
-    // digitalWrite(CSADC2, HIGH);
-    // digitalWrite(CSADC3, HIGH);
-    // digitalWrite(CSADC4, HIGH);
-    // digitalWrite(CSADC5, HIGH);
-    // digitalWrite(CSADC6, HIGH);
+    digitalWrite(CSADC1, HIGH);
+    digitalWrite(CSADC2, HIGH);
+    digitalWrite(CSADC3, HIGH);
+    digitalWrite(CSADC4, HIGH);
+    digitalWrite(CSADC5, HIGH);
+    digitalWrite(CSADC6, HIGH);
 
-    // pinMode(CSADC1, OUTPUT);
-    // pinMode(CSADC2, OUTPUT);
-    // pinMode(CSADC3, OUTPUT);
-    // pinMode(CSADC4, OUTPUT);
+    pinMode(CSADC1, OUTPUT);
+    pinMode(CSADC2, OUTPUT);
+    pinMode(CSADC3, OUTPUT);
+    pinMode(CSADC4, OUTPUT);
     pinMode(CSADC5, OUTPUT);
-    // pinMode(CSADC6, OUTPUT);
+    pinMode(CSADC6, OUTPUT);
 
     // Initialisation des sorties de veille/éveil des produits CMD_ADC_DUT
-    // digitalWrite(CMD_ACC_DUT1, HIGH);
-    // digitalWrite(CMD_ACC_DUT2, HIGH);
-    // digitalWrite(CMD_ACC_DUT3, HIGH);
-    // digitalWrite(CMD_ACC_DUT4, HIGH);
-    // digitalWrite(CMD_ACC_DUT5, HIGH);
-    // digitalWrite(CMD_ACC_DUT6, HIGH);
+    digitalWrite(CMD_ACC_DUT1, HIGH);
+    digitalWrite(CMD_ACC_DUT2, HIGH);
+    digitalWrite(CMD_ACC_DUT3, HIGH);
+    digitalWrite(CMD_ACC_DUT4, HIGH);
+    digitalWrite(CMD_ACC_DUT5, HIGH);
+    digitalWrite(CMD_ACC_DUT6, HIGH);
 
-    // pinMode(CMD_ACC_DUT1, OUTPUT);
-    // pinMode(CMD_ACC_DUT2, OUTPUT);
-    // pinMode(CMD_ACC_DUT3, OUTPUT);
-    // pinMode(CMD_ACC_DUT4, OUTPUT);
-    // pinMode(CMD_ACC_DUT5, OUTPUT);
-    // pinMode(CMD_ACC_DUT6, OUTPUT);
+    pinMode(CMD_ACC_DUT1, OUTPUT);
+    pinMode(CMD_ACC_DUT2, OUTPUT);
+    pinMode(CMD_ACC_DUT3, OUTPUT);
+    pinMode(CMD_ACC_DUT4, OUTPUT);
+    pinMode(CMD_ACC_DUT5, OUTPUT);
+    pinMode(CMD_ACC_DUT6, OUTPUT);
 
     // Initialisation des entrées d'états de conversion(µa ou mA/A ?)
     pinMode(UI_PROT_STATE_DUT1, INPUT);
