@@ -661,18 +661,17 @@ void loop()
     // SPI.transfer(0b0);
 
     digitalWrite(CSADC5, LOW);
-    
+
     long result = 0;
 
-
     result = SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-    Serial.println(result, BIN)²;
-    result = result << 8;        //SerialUSB.println(result,BIN);
-    Serial.println(result,BIN);
+    Serial.println(result, BIN) ²;
+    result = result << 8; //SerialUSB.println(result,BIN);
+    Serial.println(result, BIN);
     // Récupération de l'octet B2
     result = result | SPI.transfer(0x00); //SerialUSB.println(result,BIN);
     Serial.println(result, BIN);
-    result = result << 8;                 //SerialUSB.println(result,BIN);
+    result = result << 8; //SerialUSB.println(result,BIN);
     Serial.println(result, BIN);
     // Récupération de l'octet B3
     result = result | SPI.transfer(0x00); //SerialUSB.println(result,BIN);
@@ -716,60 +715,15 @@ void loop()
     // SpiRead(6, 2);
     // SpiRead(6, 3);
 
-    // Tableau des Codes Hexa sélection de channel
-    // int channel[8] = {0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F};
-    // int n = 1;
-    // long result = 0;
-
-    // digitalWrite(CSADC1, HIGH);
-    // SPI.transfer(0b1000);
-    // delay(150);
-    // digitalWrite(CSADC1, LOW);
-
-    // // // Chip Select à l'état haut pour la sélection du channel
-    // // digitalWrite(CSADC1, LOW);
-
-    // digitalWrite(CSADC1, HIGH); // Uniquement le CSADC à 1 de l'ADC dont on souhaite mofidier le channel
-
-    // // Envoie SPI de l'adresse ADC pour le channel souhaité
-    // SPI.transfer(channel[n]);
-
-    // //Tconv (160 ms voir page 5 data sheet)
-    // digitalWrite(CSADC1, LOW);
-    // delay(140);
-
-    // while(MISO == HIGH)
-    // ;
-
-    // // Attente de la fin de conversion
-    // // Observation du passage de MISO à zéro
-
-    // // Récupération des trois octets du résultat
-    // // Récupération de l'octet B1
-    // result = SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-    // Serial.println(result,BIN);
-    // result = result << 8;        //SerialUSB.println(result,BIN);
-    // Serial.println(result,BIN);
-    // // Récupération de l'octet B2
-    // result = result | SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-    // Serial.println(result,BIN);
-    // result = result << 8;                 //SerialUSB.println(result,BIN);
-    // Serial.println(result,BIN);
-    // // Récupération de l'octet B3
-    // result = result | SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-    // Serial.println(result,BIN);
-    // // Supression des 4bits de poids forts, conservation des 20bits de données
-    // result = 0x0fffff & result; //SerialUSB.println(result,BIN);
-    // Serial.println(result,BIN);
-
-    // // On termine la conversion en remettant le chip select à l'état haut
-
-    // digitalWrite(CSADC1, HIGH);
-
-    // // Renvoie du résultat
-    // Serial.println(result);
-
     // EnvoiTrame(dut1, dut2, dut3, dut4, dut5, dut6);
+
+    for(int i=0; i<6; i++)
+    {
+        for (int j=0; j<8; j++)
+        {
+            SpiRead(i, j);
+        }
+    }
 
     Serial.println("\nFin LOOP \n\n\n");
 
@@ -2175,8 +2129,6 @@ long SpiRead(int ADC_CS_number, int channel_num)
     int channel[8] = {0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F};
     int CSADC_channel[6] = {CSADC1, CSADC2, CSADC3, CSADC4, CSADC5, CSADC6};
     long result = 0;
-    byte sig = 0; // sign bit
-    byte b, c;
 
     Serial.print("ADC: ");
     Serial.print(ADC_CS_number);
@@ -2186,7 +2138,6 @@ long SpiRead(int ADC_CS_number, int channel_num)
     digitalWrite(CSADC_channel[ADC_CS_number], HIGH);
 
     SPI.transfer(channel_num);
-    delay(166);
     //while (digitalRead(BUSYPIN)==HIGH) {} // wait until ADC result is ready
 
     digitalWrite(CSADC_channel[ADC_CS_number], LOW); // take the SS pin low to select the chip
@@ -2211,39 +2162,10 @@ long SpiRead(int ADC_CS_number, int channel_num)
 
     //if (sig) result |= 0xf0000000; // if input is negative, insert sign bit (0xf0.. or 0xe0... ?)
 
-    Serial.println(result, BIN);
+    // Serial.println(result, BIN);
     Serial.println(result);
+    delay(150);
 
-    digitalWrite(CSADC_channel[ADC_CS_number], HIGH);
-    delay(133);
-    SPI.transfer(channel_num);
-
-    //while (digitalRead(BUSYPIN)==HIGH) {} // wait until ADC result is ready
-
-    digitalWrite(CSADC_channel[ADC_CS_number], LOW); // take the SS pin low to select the chip
-    delay(133);                                      // probably not needed, only need 25 nsec delay
-
-    // Récupération des trois octets du résultat
-    // Récupération de l'octet B1
-    result = SPI.transfer(0xff); //SerialUSB.println(result,BIN);
-    result = result << 8;        //SerialUSB.println(result,BIN);
-    Serial.println(result, BIN);
-    // Récupération de l'octet B2
-    result = result | SPI.transfer(0xff); //SerialUSB.println(result,BIN);
-    result = result << 8;                 //SerialUSB.println(result,BIN);
-    Serial.println(result, BIN);
-    // Récupération de l'octet B3
-    result = result | SPI.transfer(0xff); //SerialUSB.println(result,BIN);
-    Serial.println(result, BIN);
-    // Supression des 4bits de poids forts, conservation des 20bits de données
-    result = 0x0fffff & result; //SerialUSB.println(result,BIN);
-
-    digitalWrite(CSADC_channel[ADC_CS_number], HIGH); // take the SS pin high to bring MISO to hi-Z and start new conversion
-
-    //if (sig) result |= 0xf0000000; // if input is negative, insert sign bit (0xf0.. or 0xe0... ?)
-
-    Serial.println(result, BIN);
-    Serial.println(result);
     return result;
 
 } //END CODE HERE
