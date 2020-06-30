@@ -558,7 +558,8 @@ void loop()
                 /*SerialUSB.print("nb cycle : ");
                  SerialUSB.println(nb_cycle);*/
                 uploadconfig = true;
-                SerialUSB.print("ok\n");
+                //SerialUSB.print("ok\n");
+                SerialUSB.println("ok");
                 Serial.println("OK TRANSMISSION");
                 break;
 
