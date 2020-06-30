@@ -666,7 +666,7 @@ void loop()
 
 
     result = SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-    Serial.println(result, BIN)²;
+    Serial.println(result, BIN);
     result = result << 8;        //SerialUSB.println(result,BIN);
     Serial.println(result,BIN);
     // Récupération de l'octet B2

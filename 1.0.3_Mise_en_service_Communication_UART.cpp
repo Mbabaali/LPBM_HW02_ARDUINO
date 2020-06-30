@@ -200,6 +200,8 @@ public:
     // Metdode de Test des valeurs lues dans les channel
     void test_channel();
 
+    void reassemblage_valeurs_lue();
+
     void correctionValeur();
 
     void checkUniteAdc();
@@ -308,7 +310,7 @@ void setup()
     SPI.begin();
 
     // Clock DUE = 84 MHz
-    SPI.setClockDivider(SPI_CLOCK_DIV64); //  Fréquence d'horloge arduino 84MHz Fréquence d'horloge de 1.31MHz
+    SPI.setClockDivider(48); //  Fréquence d'horloge arduino 84MHz Fréquence d'horloge de 1.31MHz  SPI_CLOCK_DIV64
 
     SPI.setBitOrder(MSBFIRST);  // Most Significant Bit First (Arduino.org pour plus de détails)
     SPI.setDataMode(SPI_MODE0); // SPI Mode_0
@@ -329,19 +331,19 @@ void setup()
     pinMode(CSADC6, OUTPUT);
 
     // Initialisation des sorties de veille/éveil des produits CMD_ADC_DUT
-    // digitalWrite(CMD_ACC_DUT1, HIGH);
-    // digitalWrite(CMD_ACC_DUT2, HIGH);
-    // digitalWrite(CMD_ACC_DUT3, HIGH);
-    // digitalWrite(CMD_ACC_DUT4, HIGH);
-    // digitalWrite(CMD_ACC_DUT5, HIGH);
-    // digitalWrite(CMD_ACC_DUT6, HIGH);
+    digitalWrite(CMD_ACC_DUT1, HIGH);
+    digitalWrite(CMD_ACC_DUT2, HIGH);
+    digitalWrite(CMD_ACC_DUT3, HIGH);
+    digitalWrite(CMD_ACC_DUT4, HIGH);
+    digitalWrite(CMD_ACC_DUT5, HIGH);
+    digitalWrite(CMD_ACC_DUT6, HIGH);
 
-    // pinMode(CMD_ACC_DUT1, OUTPUT);
-    // pinMode(CMD_ACC_DUT2, OUTPUT);
-    // pinMode(CMD_ACC_DUT3, OUTPUT);
-    // pinMode(CMD_ACC_DUT4, OUTPUT);
-    // pinMode(CMD_ACC_DUT5, OUTPUT);
-    // pinMode(CMD_ACC_DUT6, OUTPUT);
+    pinMode(CMD_ACC_DUT1, OUTPUT);
+    pinMode(CMD_ACC_DUT2, OUTPUT);
+    pinMode(CMD_ACC_DUT3, OUTPUT);
+    pinMode(CMD_ACC_DUT4, OUTPUT);
+    pinMode(CMD_ACC_DUT5, OUTPUT);
+    pinMode(CMD_ACC_DUT6, OUTPUT);
 
     // Initialisation des entrées d'états de conversion(µa ou mA/A ?)
     pinMode(UI_PROT_STATE_DUT1, INPUT);
@@ -366,11 +368,11 @@ void setup()
     Timer3.getAvailable().attachInterrupt(HANDLER_ACC).setPeriod(1000000).start();
     Timer2.getAvailable().attachInterrupt(HANDLER_CURRENT_MAX).setFrequency(10).start();
 
-    // while (!SerialUSB)
-    // {
-    //     // SerialUSB.println("wait for serial port to connect. Needed for native USB"); //
-    //     Serial.println("wait for serial port to connect. Needed for native USB"); //
-    // }
+    while (!SerialUSB)
+    {
+        // SerialUSB.println("wait for serial port to connect. Needed for native USB"); //
+        Serial.println("wait for serial port to connect. Needed for native USB"); //
+    }
 
     //Serial.println("Designed and developed by Robin Carriou & Vincent Bougouin");
 }
@@ -416,186 +418,183 @@ void loop()
 
     boolean quitter = false;
 
-    // while (SerialUSB.available() && !finReception)
-    // {
-    //     /**
-    //  * Cette boucle s'active si l'arduino commence à recevoir des données sur son port uart (données envoyé par la pi). on receptionne les données sous forme
-    //  * de string (inputString), puis lorsque la reception est fini, on analyse la chaine de caractère. selon le format suivant :
-    //  * ->la première lettre est un s : l'user a "start" l'acquisition, on reçoit donc les paramètres de time_awake et time_sleep
-    //  * ->la première lettre est un "p" : l'user a mis en pause l'acquisition : il faut donc....
-    //  *
-    //  */
-    //     // get the new byte:
-    //     char inChar = (char)SerialUSB.read();
-    //     // add it to the inputString:
-    //     inputString += inChar;
-    //     // if the incoming character is a newline, set a flag so the main loop can
-    //     // do something about it:
-    //     if (inChar == '\n')
-    //     {
-    //         finReception = true;
-    //     }
-    //     if (finReception)
-    //     {
-    //         Serial.print("inputString: ");
-    //         Serial.println(inputString);
-    //         switch (inputString[0])
-    //         {
-    //         /**
-    //      * On regarde la première lettre des données reçues
-    //      */
-    //         case 's':
+    while (SerialUSB.available() && !finReception)
+    {
+        /**
+     * Cette boucle s'active si l'arduino commence à recevoir des données sur son port uart (données envoyé par la pi). on receptionne les données sous forme
+     * de string (inputString), puis lorsque la reception est fini, on analyse la chaine de caractère. selon le format suivant :
+     * ->la première lettre est un s : l'user a "start" l'acquisition, on reçoit donc les paramètres de time_awake et time_sleep
+     * ->la première lettre est un "p" : l'user a mis en pause l'acquisition : il faut donc....
+     *
+     */
+        // get the new byte:
+        char inChar = (char)SerialUSB.read();
+        // add it to the inputString:
+        inputString += inChar;
+        // if the incoming character is a newline, set a flag so the main loop can
+        // do something about it:
+        if (inChar == '\n')
+        {
+            finReception = true;
+        }
+        if (finReception)
+        {
+            Serial.print("inputString: ");
+            Serial.println(inputString);
+            switch (inputString[0])
+            {
+            /**
+         * On regarde la première lettre des données reçues
+         */
+            case 's':
 
-    //             Serial.print("inputString: ");
-    //             Serial.println(inputString);
+                Serial.print("inputString: ");
+                Serial.println(inputString);
 
-    //             cycle[0].time_awake_str = inputString.substring(1, 7);
-    //             cycle[0].time_sleep_str = inputString.substring(7, 13);
-    //             cycle[0].time_awake = cycle[0].time_awake_str.toInt();
-    //             cycle[0].time_sleep = cycle[0].time_sleep_str.toInt();
+                cycle[0].time_awake_str = inputString.substring(1, 7);
+                cycle[0].time_sleep_str = inputString.substring(7, 13);
+                cycle[0].time_awake = cycle[0].time_awake_str.toInt();
+                cycle[0].time_sleep = cycle[0].time_sleep_str.toInt();
 
-    //             // Serial.print("cycle[0].time_awake_str: ");
-    //             // Serial.println(cycle[0].time_awake_str);
-    //             // Serial.print("cycle[0].time_sleep_str: ");
-    //             // Serial.println(cycle[0].time_sleep_str);
+                // Serial.print("cycle[0].time_awake_str: ");
+                // Serial.println(cycle[0].time_awake_str);
+                // Serial.print("cycle[0].time_sleep_str: ");
+                // Serial.println(cycle[0].time_sleep_str);
 
-    //             cycle[1].time_awake_str = inputString.substring(13, 19);
-    //             cycle[1].time_sleep_str = inputString.substring(19, 25);
-    //             cycle[1].time_awake = cycle[1].time_awake_str.toInt();
-    //             cycle[1].time_sleep = cycle[1].time_sleep_str.toInt();
+                cycle[1].time_awake_str = inputString.substring(13, 19);
+                cycle[1].time_sleep_str = inputString.substring(19, 25);
+                cycle[1].time_awake = cycle[1].time_awake_str.toInt();
+                cycle[1].time_sleep = cycle[1].time_sleep_str.toInt();
 
-    //             // Serial.print("cycle[1].time_awake_str: ");
-    //             // Serial.println(cycle[1].time_awake_str);
-    //             // Serial.print("cycle[1].time_sleep_str: ");
-    //             // Serial.println(cycle[1].time_sleep_str);
+                // Serial.print("cycle[1].time_awake_str: ");
+                // Serial.println(cycle[1].time_awake_str);
+                // Serial.print("cycle[1].time_sleep_str: ");
+                // Serial.println(cycle[1].time_sleep_str);
 
-    //             cycle[2].time_awake_str = inputString.substring(25, 31);
-    //             cycle[2].time_sleep_str = inputString.substring(31, 37);
-    //             cycle[2].time_awake = cycle[2].time_awake_str.toInt();
-    //             cycle[2].time_sleep = cycle[2].time_sleep_str.toInt();
+                cycle[2].time_awake_str = inputString.substring(25, 31);
+                cycle[2].time_sleep_str = inputString.substring(31, 37);
+                cycle[2].time_awake = cycle[2].time_awake_str.toInt();
+                cycle[2].time_sleep = cycle[2].time_sleep_str.toInt();
 
-    //             // Serial.print("cycle[2].time_awake_str: ");
-    //             // Serial.println(cycle[2].time_awake_str);
-    //             // Serial.print("cycle[2].time_sleep_str: ");
-    //             // Serial.println(cycle[2].time_sleep_str);
-    //             /*conteneur=inputString.substring(37,40);
-    //       f_acquisition=conteneur.toInt();
-    //       f_acquisition=f_acquisition*1000;
-    //       f_acquisition-=50;
-    //       conteneur="";*/
+                // Serial.print("cycle[2].time_awake_str: ");
+                // Serial.println(cycle[2].time_awake_str);
+                // Serial.print("cycle[2].time_sleep_str: ");
+                // Serial.println(cycle[2].time_sleep_str);
+                /*conteneur=inputString.substring(37,40);
+          f_acquisition=conteneur.toInt();
+          f_acquisition=f_acquisition*1000;
+          f_acquisition-=50;
+          conteneur="";*/
 
-    //             conteneur = inputString.substring(37, 38);
-    //             etat_start = conteneur.toInt();
-    //             cycle_en_cours = 0;
-    //             flag_cycle = 0;
-    //             rep_en_cours = 1;
+                conteneur = inputString.substring(37, 38);
+                etat_start = conteneur.toInt();
+                cycle_en_cours = 0;
+                flag_cycle = 0;
+                rep_en_cours = 1;
 
-    //             Serial.print("etat_start: ");
-    //             Serial.println(etat_start);
+                Serial.print("etat_start: ");
+                Serial.println(etat_start);
 
-    //             cycle[0].nb_rep_str = inputString.substring(38, 40);
-    //             cycle[1].nb_rep_str = inputString.substring(40, 42);
-    //             cycle[2].nb_rep_str = inputString.substring(42, 44);
-    //             cycle[0].nb_rep = cycle[0].nb_rep_str.toInt();
-    //             cycle[1].nb_rep = cycle[1].nb_rep_str.toInt();
-    //             cycle[2].nb_rep = cycle[2].nb_rep_str.toInt();
+                cycle[0].nb_rep_str = inputString.substring(38, 40);
+                cycle[1].nb_rep_str = inputString.substring(40, 42);
+                cycle[2].nb_rep_str = inputString.substring(42, 44);
+                cycle[0].nb_rep = cycle[0].nb_rep_str.toInt();
+                cycle[1].nb_rep = cycle[1].nb_rep_str.toInt();
+                cycle[2].nb_rep = cycle[2].nb_rep_str.toInt();
 
-    //             COURANT_MAX.amax_str = inputString.substring(45, 47);
+                COURANT_MAX.amax_str = inputString.substring(45, 47);
 
-    //             Serial.print("\n\nLa valeur lu du courant max vaut: ");
-    //             Serial.println(COURANT_MAX.amax_str);
+                Serial.print("\n\nLa valeur lu du courant max vaut: ");
+                Serial.println(COURANT_MAX.amax_str);
 
-    //             Serial.print("cycle[0].nb_rep_str: ");
-    //             Serial.println(cycle[0].nb_rep_str);
-    //             Serial.print("cycle[1].nb_rep_str ");
-    //             Serial.println(cycle[1].nb_rep_str);
-    //             Serial.print("cycle[2].nb_rep_str ");
-    //             Serial.println(cycle[2].nb_rep_str);
+                Serial.print("cycle[0].nb_rep_str: ");
+                Serial.println(cycle[0].nb_rep_str);
+                Serial.print("cycle[1].nb_rep_str ");
+                Serial.println(cycle[1].nb_rep_str);
+                Serial.print("cycle[2].nb_rep_str ");
+                Serial.println(cycle[2].nb_rep_str);
 
-    //             //DEBUG//
-    //             /*
-    //       SerialUSB.print("awake 1 : ");
-    //       SerialUSB.println(cycle[0].time_awake);
-    //       SerialUSB.print("sleep 1 : ");
-    //       SerialUSB.println(cycle[0].time_sleep);
+                //DEBUG//
+                /*
+          SerialUSB.print("awake 1 : ");
+          SerialUSB.println(cycle[0].time_awake);
+          SerialUSB.print("sleep 1 : ");
+          SerialUSB.println(cycle[0].time_sleep);
 
-    //       SerialUSB.print("awake 2 : ");
-    //       SerialUSB.println(cycle[1].time_awake);
-    //       SerialUSB.print("sleep 2 : ");
-    //       SerialUSB.println(cycle[1].time_sleep);
+          SerialUSB.print("awake 2 : ");
+          SerialUSB.println(cycle[1].time_awake);
+          SerialUSB.print("sleep 2 : ");
+          SerialUSB.println(cycle[1].time_sleep);
 
-    //       SerialUSB.print("awake 3 : ");
-    //       SerialUSB.println(cycle[2].time_awake);
-    //       SerialUSB.print("sleep 3 : ");
-    //       SerialUSB.println(cycle[2].time_sleep);
+          SerialUSB.print("awake 3 : ");
+          SerialUSB.println(cycle[2].time_awake);
+          SerialUSB.print("sleep 3 : ");
+          SerialUSB.println(cycle[2].time_sleep);
 
-    //       SerialUSB.print("frequence : ");
-    //       SerialUSB.println(f_acquisition);
+          SerialUSB.print("frequence : ");
+          SerialUSB.println(f_acquisition);
 
-    //       SerialUSB.print("start : ");
-    //       SerialUSB.println(etat_start);
+          SerialUSB.print("start : ");
+          SerialUSB.println(etat_start);
 
-    //       SerialUSB.print("repetition 1er cycle : ");
-    //       SerialUSB.println(cycle[0].nb_rep);
-    //       SerialUSB.print("repetition 2eme cycle : ");
-    //       SerialUSB.println(cycle[1].nb_rep);
-    //       SerialUSB.print("repetition 3eme cycle : ");
-    //       SerialUSB.println(cycle[2].nb_rep);
-    //       */
+          SerialUSB.print("repetition 1er cycle : ");
+          SerialUSB.println(cycle[0].nb_rep);
+          SerialUSB.print("repetition 2eme cycle : ");
+          SerialUSB.println(cycle[1].nb_rep);
+          SerialUSB.print("repetition 3eme cycle : ");
+          SerialUSB.println(cycle[2].nb_rep);
+          */
 
-    //             if (etat_start == 1)
-    //             {
-    //                 changerEtatACC(HIGH);
-    //             }
-    //             if (etat_start == 0)
-    //             {
-    //                 changerEtatACC(LOW);
-    //             }
+                if (etat_start == 1)
+                {
+                    changerEtatACC(HIGH);
+                }
+                if (etat_start == 0)
+                {
+                    changerEtatACC(LOW);
+                }
 
-    //             nb_cycle = verif_nb_cycle();
-    //             /*SerialUSB.print("nb cycle : ");
-    //              SerialUSB.println(nb_cycle);*/
-    //             uploadconfig = true;
-    //             SerialUSB.print("ok\n");
-    //             Serial.println("OK TRANSMISSION");
-    //             break;
+                nb_cycle = verif_nb_cycle();
+                /*SerialUSB.print("nb cycle : ");
+                 SerialUSB.println(nb_cycle);*/
+                uploadconfig = true;
+                SerialUSB.print("ok\n");
+                Serial.println("OK TRANSMISSION");
+                break;
 
-    //         case 'p':
-    //             uploadconfig = false;
-    //             changerEtatACC(LOW);
-    //             cycle_en_cours = 0;
-    //             flag_cycle = 0;
+            case 'p':
+                uploadconfig = false;
+                changerEtatACC(LOW);
+                cycle_en_cours = 0;
+                flag_cycle = 0;
 
-    //             SerialUSB.print("ok\n");
-    //             break;
+                SerialUSB.print("ok\n");
+                break;
 
-    //         case 'd':
-    //             SerialUSB.print("d");
-    //             SerialUSB.print("test debug");
-    //             SerialUSB.print("\n");
+            case 'd':
+                SerialUSB.print("d");
+                SerialUSB.print("test debug");
+                SerialUSB.print("\n");
 
-    //         default:
-    //             SerialUSB.print("problème : l'arduino ne reconnait pas la donnée reçue : ");
-    //             SerialUSB.println(inputString);
-    //             break;
-    //         }
-    //         inputString = "";
-    //         finReception = false;
-    //     }
-    // }
+            default:
+                SerialUSB.print("problème : l'arduino ne reconnait pas la donnée reçue : ");
+                SerialUSB.println(inputString);
+                break;
+            }
+            inputString = "";
+            finReception = false;
+        }
+    }
 
-    // // SelectChannel(0);
-    // // delay(150);
+
+
     dut1.set_channel_UI(SpiRead(0, 0));
     dut2.set_channel_UI(SpiRead(1, 0));
-    delay(100);
     dut3.set_channel_UI(SpiRead(2, 0));
     dut4.set_channel_UI(SpiRead(3, 0));
     dut5.set_channel_UI(SpiRead(4, 0));
     dut6.set_channel_UI(SpiRead(5, 0));
-    // //
-    // SelectChannel(1);
-    // delay(150);
+
     dut1.set_channel_MI(SpiRead(0, 1));
     dut2.set_channel_MI(SpiRead(1, 1));
     dut3.set_channel_MI(SpiRead(2, 1));
@@ -603,17 +602,13 @@ void loop()
     dut5.set_channel_MI(SpiRead(4, 1));
     dut6.set_channel_MI(SpiRead(5, 1));
 
-    // SelectChannel(2);
-    // delay(150);
     dut1.set_channel_I(SpiRead(0, 2));
     dut2.set_channel_I(SpiRead(1, 2));
     dut3.set_channel_I(SpiRead(2, 2));
     dut4.set_channel_I(SpiRead(3, 2));
     dut5.set_channel_I(SpiRead(4, 2));
     dut6.set_channel_I(SpiRead(5, 2));
-    // //
-    // SelectChannel(3);
-    // delay(150);
+    
     dut1.set_channel_PWR_DUT(SpiRead(0, 3));
     dut2.set_channel_PWR_DUT(SpiRead(1, 3));
     dut3.set_channel_PWR_DUT(SpiRead(2, 3));
@@ -628,55 +623,28 @@ void loop()
     dut5.set_channel_NO(SpiRead(4, 4));
     dut6.set_channel_NO(SpiRead(5, 4));
 
-    // SelectChannel(0);
-    // delay(150);
-    // dut1.set_channel_UI(SpiReadChannelADC1());
-    // dut2.set_channel_UI(SpiReadChannelADC2());
-    // dut3.set_channel_UI(SpiReadChannelADC3());
-    // dut4.set_channel_UI(SpiReadChannelADC4());
-    // dut5.set_channel_UI(SpiReadChannelADC5());
-    // dut6.set_channel_UI(SpiReadChannelADC6());
-    // //
-    // SelectChannel(1);
-    // delay(150);
-    // dut1.set_channel_MI(SpiReadChannelADC1());
-    // dut2.set_channel_MI(SpiReadChannelADC2());
-    // dut3.set_channel_MI(SpiReadChannelADC3());
-    // dut4.set_channel_MI(SpiReadChannelADC4());
-    // dut5.set_channel_MI(SpiReadChannelADC5());
-    // dut6.set_channel_MI(SpiReadChannelADC6());
 
-    // SelectChannel(2);
-    // delay(150);
-    // dut1.set_channel_I(SpiReadChannelADC1());
-    // dut2.set_channel_I(SpiReadChannelADC2());
-    // dut3.set_channel_I(SpiReadChannelADC3());
-    // dut4.set_channel_I(SpiReadChannelADC4());
-    // dut5.set_channel_I(SpiReadChannelADC5());
-    // dut6.set_channel_I(SpiReadChannelADC6());
-    // //
-    // SelectChannel(3);
-    // delay(150);
-    // dut1.set_channel_PWR_DUT(SpiReadChannelADC1());
-    // dut2.set_channel_PWR_DUT(SpiReadChannelADC2());
-    // dut3.set_channel_PWR_DUT(SpiReadChannelADC3());
-    // dut4.set_channel_PWR_DUT(SpiReadChannelADC4());
-    // dut5.set_channel_PWR_DUT(SpiReadChannelADC5());
-    // dut6.set_channel_PWR_DUT(SpiReadChannelADC6());
+    dut1.reassemblage_valeurs_lue();
+    dut2.reassemblage_valeurs_lue();
+    dut3.reassemblage_valeurs_lue();
+    dut4.reassemblage_valeurs_lue();
+    dut5.reassemblage_valeurs_lue();
+    dut6.reassemblage_valeurs_lue();
 
-    dut1.test_channel();
-    dut2.test_channel();
-    dut3.test_channel();
-    dut4.test_channel();
-    dut5.test_channel();
-    dut6.test_channel();
+    // dut1.test_channel();
+    // dut2.test_channel();
+    // dut3.test_channel();
+    // dut4.test_channel();
+    // dut5.test_channel();
+    // dut6.test_channel();
+    // dutt.test_channel();
 
-    // dut1.assignation_valeurs_converties();
-    // dut2.assignation_valeurs_converties();
-    // dut3.assignation_valeurs_converties();
-    // dut4.assignation_valeurs_converties();
-    // dut5.assignation_valeurs_converties();
-    // dut6.assignation_valeurs_converties();
+    dut1.assignation_valeurs_converties();
+    dut2.assignation_valeurs_converties();
+    dut3.assignation_valeurs_converties();
+    dut4.assignation_valeurs_converties();
+    dut5.assignation_valeurs_converties();
+    dut6.assignation_valeurs_converties();
 
     // dut1.test_assignation_valeurs_converties();
     // dut2.test_assignation_valeurs_converties();
@@ -685,11 +653,11 @@ void loop()
     // dut5.test_assignation_valeurs_converties();
     // dut6.test_assignation_valeurs_converties();
 
-    // EnvoiTrame(dut1, dut2, dut3, dut4, dut5, dut6);
+    EnvoiTrame(dut1, dut2, dut3, dut4, dut5, dut6);
 
     Serial.println("\nFin LOOP \n\n\n");
 
-    //delay(800);
+    delay(50);
 }
 
 void HANDLER_CURRENT_MAX()
@@ -745,14 +713,10 @@ float conversion_channel_mA(long result)
     double uMax = 4.098;
     double span = 0.00000390625; //(uMax/resolution);
     int gain = 250 * 3;
-    double tensionMaxLtc = uMax / gain;
-    double courant_max_LTC = tensionMaxLtc / resistanceShunt;
-    double courantAmperParBit = courant_max_LTC / 1048575;
 
-    //courant_mA = (result * courantAmperParBit);// 0.00000390625);
-    courant_mA = (result * 0.00000476837613);
+    courant_mA = (result * (uMax/resolution));
 
-    courant_mA = (courant_mA * 1000) / (0.020 * 250 * 3);
+    courant_mA = (courant_mA * 1000) / (resistanceShunt * gain);
     // Retour de la valeur convertie
     return courant_mA;
 }
@@ -763,8 +727,16 @@ float conversion_channel_mA(long result)
 float conversion_channel_microA(long result)
 {
     double courant_microA;
-    courant_microA = (result * 0.00000476837613);
-    courant_microA = (courant_microA * 1000000) / (10 * 250 * 3);
+
+    double resolution = 1048576;
+    double resistanceShunt = 10;
+    double uMax = 4.098;
+    double span = 0.00000390625; //(uMax/resolution);
+    int gain = 250 * 3;
+ 
+
+    courant_microA = (result * (uMax/resolution));
+    courant_microA = (courant_microA * 1000000) / (resistanceShunt * gain);
 
     // Retour de la valeur convertie     0.00000
     return courant_microA;
@@ -777,8 +749,10 @@ float conversion_channel_power_in(long result)
 {
     // Déclaration de la variable pour la tension
     double power_in;
+    double resolution = 1048576;
+    double uMax = 4.098;
 
-    power_in = (result * 0.00003047);
+    power_in = (result * (uMax/resolution));
 
     // Retour de la valeur convertie
     return power_in;
@@ -791,338 +765,15 @@ float conversion_channel_power_out(long result)
 {
     // Déclaration de la variable pour la tension
     double power_out;
+    double resolution = 1048576;
+    double uMax = 4.098;
 
-    power_out = (result * 0.00003047);
+    power_out = (result * (uMax/resolution));
 
     // Retour de la valeur convertie
     return power_out;
 }
 
-void CS_ADC(int STATE)
-{
-    int CSADC_channel[6] = {CSADC1, CSADC2, CSADC3, CSADC4, CSADC5, CSADC6};
-
-    for (unsigned char i = 0; i < 4; i++)
-    {
-        digitalWrite(CSADC_channel[i], !STATE); // CSADC à 1, pas de sortie
-
-        digitalWrite(CSADC_channel[i], STATE);
-    }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////FONCTION SELECTION CHANNEL ////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
-/*Typically, CSADC and CSADC are tied together
-    SCK and CLK are tied together and driven with a common clock signal.
-
-    During channel selection, CSADC is HIGH. Data is shifted into the DIN pin on
-    the rising edge of CLK, see Figure 4. Table 3 shows the bit combinations for
-    channel selection.
-
-    In order to enable the multiplexer output, CSADC must be pulled LOW.
-    The multiplexer should be programmed after the previous conversion is complete.
-
-    In order to guarantee the conversion is complete, the multiplexer addressing should
-    be delayed a minimum tCONV (approximately 133ms for a 60Hz notch) after the data out is read.
-    While the multiplexer is being programmed, the ADC is in the sleep state.
-    Once the ADC addressing is complete, the data from the preceding conversion can be read.
-    A new conversion cycle is initiated following the data read cycle with the analog
-    input tied to the newly selected channel.
-*/
-
-/**
-     * A single CS signal drives both the multiplexer CSMUX and converter CSADC inputs. 
-     * This common signal is used to monitor and control the state of the conversion as well as enable the channel selection.
-     * 
-     * The serial clock mode is selected on the falling edge of CSADC. To select the external serial clock mode, 
-     * the serial clock pin (SCK) must be LOW during each CSADC falling edge.
-     * 
-     * The serial data output pin (SDO) is Hi-Z as long as CSADC is HIGH. At any time during the conversion cycle, 
-     * CSADC may be pulled LOW in order to monitor the state of the converter. While CSADC is LOW, EOC is output to the SDO pin. 
-     * EOC = 1 while a conversion is in progress and EOC = 0 if the device is in the sleep state. Independent of CSADC, the device automatically enters 
-     * the sleep state once the conversion is complete. While the device is in the sleep state and CSADC is HIGH, the power consumption is reduced an order of magnitude.
-     * 
-     * While the device is in the sleep state, prior to entering the data output state, the user may program the multiplexer. 
-     * As shown in Figure 13, the multiplexer channel is selected by serial shifting a 4-bit word into the DIN pin on the rising edge of CLK (CLK is tied to SCK). 
-     * The first bit is an enable bit that must be HIGH in order to program a channel. The next three bits determine which channel is selected, see Table 3. 
-     * On the falling edge of CSMUX, the new channel is selected and will be valid for the first conversion performed following the data output state. 
-     * Clock signals applied to the CLK pin while CSMUX is LOW (during the data output state) will have no effect on the channel selection. Furthermore, 
-     * if DIN is held LOW or CLK is held LOW during the sleep state, the channel selection is unchanged.
-     */
-/////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////FONCTION SELECTION CHANNEL ////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
-void SelectChannel(int n)
-{
-    // Tableau des Codes Hexa sélection de channel
-    int channel[8] = {0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F}; //
-    int CSADC_channel[6] = {CSADC1, CSADC2, CSADC3, CSADC4, CSADC5, CSADC6};
-
-    for (int i = 0; i < 6; i++)
-    {
-        digitalWrite(CSADC_channel[i], HIGH);
-    }
-
-    for (unsigned char i = 0; i < 6; i++)
-    {
-        // On remet tous les CSADC à 0 pour les connecter en interne à l'ADC
-        digitalWrite(CSADC_channel[i], LOW);
-    }
-
-    for (int i = 0; i < 6; i++)
-    {
-        digitalWrite(CSADC_channel[i], HIGH);
-    }
-
-    // Envoie SPI de l'adresse ADC pour le channel souhaité
-    SPI.transfer(channel[n]);
-     for (unsigned char i = 0; i < 6; i++)
-    {
-        // On remet tous les CSADC à 0 pour les connecter en interne à l'ADC
-        digitalWrite(CSADC_channel[i], LOW);
-    }
-
-    for (int i = 0; i < 6; i++)
-    {
-        digitalWrite(CSADC_channel[i], HIGH);
-    }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////FONCTION LECTURE SPI ADC1//////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
-long SpiReadChannelADC1(void)
-{
-    /**
-    fonction pour lire le bus SPI de l'ADC 1
-  */
-    // Variable pour sauvegarder le résultat de la conversion
-    long result = 0;
-
-    digitalWrite(CSADC1, LOW);
-    digitalWrite(CSADC1, HIGH);
-    digitalWrite(CSADC1, LOW);
-
-    // Attente de la fin de conversion
-    // Observation du passage de MISO à zéro
-    // while (MISO == HIGH)
-    //     ; //tourne dans le vide tant que MISO n'est pas égale à 0
-
-    // Récupération des trois octets du résultat
-    // Récupération de l'octet B1
-    result = SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-    result = result << 8;        //SerialUSB.println(result,BIN);
-    // Récupération de l'octet B2
-    result = result | SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-    result = result << 8;                 //SerialUSB.println(result,BIN);
-    // Récupération de l'octet B3
-    result = result | SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-    // Supression des 4bits de poids forts, conservation des 20bits de données
-    result = 0x0fffff & result; //SerialUSB.println(result,BIN);
-
-    digitalWrite(CSADC1, HIGH);
-    // Renvoie du résultat
-    return (result);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////FONCTION LECTURE SPI ADC2//////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
-long SpiReadChannelADC2(void)
-{
-
-    // Variable pour sauvegarder le résultat de la conversion
-    long result = 0;
-
-    digitalWrite(CSADC2, LOW);
-     digitalWrite(CSADC2, HIGH);
-      digitalWrite(CSADC2, LOW);
-
-    // Attente de la fin de conversion
-    // Observation du passage de MISO à zéro
-    while (MISO == HIGH)
-        ;
-
-    // Récupération des trois octets du résultat
-    // Récupération de l'octet B1
-    result = SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-    result = result << 8;        //SerialUSB.println(result,BIN);
-    // Récupération de l'octet B2
-    result = result | SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-    result = result << 8;                 //SerialUSB.println(result,BIN);
-    // Récupération de l'octet B3
-    result = result | SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-
-    // Supression des 4bits de poids forts, conservation des 20bits de données
-    result = 0x0fffff & result; //SerialUSB.println(result,BIN);
-
-    // On termine la conversion en remettant le chip select à l'état haut
-
-    digitalWrite(CSADC2, HIGH);
-
-    // Renvoie du résultat
-    return (result);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////FONCTION LECTURE SPI ADC3//////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
-long SpiReadChannelADC3(void)
-{
-
-    // Variable pour sauvegarder le résultat de la conversion
-    long result = 0;
-
-    digitalWrite(CSADC3, LOW);
-    digitalWrite(CSADC3, HIGH);
-    digitalWrite(CSADC3, LOW);
-
-    // Attente de la fin de conversion
-    // Observation du passage de MISO à zéro
-    while (MISO == HIGH)
-        ;
-
-    // Récupération des trois octets du résultat
-    // Récupération de l'octet B1
-    result = SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-    result = result << 8;        //SerialUSB.println(result,BIN);
-    // Récupération de l'octet B2
-    result = result | SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-    result = result << 8;                 //SerialUSB.println(result,BIN);
-    // Récupération de l'octet B3
-    result = result | SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-
-    // Supression des 4bits de poids forts, conservation des 20bits de données
-    result = 0x0fffff & result; //SerialUSB.println(result,BIN);
-
-    // On termine la conversion en remettant le chip select à l'état haut
-    digitalWrite(CSADC3, HIGH);
-
-    // Renvoie du résultat
-
-    return (result);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////FONCTION LECTURE SPI ADC4//////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
-long SpiReadChannelADC4(void)
-{
-
-    /**
-     Permet de lire les signaux envoyé par SPI par les ADC :
-
-  */
-    // Variable pour sauvegarder le résultat de la conversion
-    long result = 0;
-
-    digitalWrite(CSADC4, LOW);
-    digitalWrite(CSADC4, HIGH);
-    digitalWrite(CSADC4, LOW);
-
-    // Attente de la fin de conversion
-    // Observation du passage de MISO à zéro
-    while (MISO == HIGH)
-        ;
-
-    // Récupération des trois octets du résultat
-    // Récupération de l'octet B1
-    result = SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-    result = result << 8;        //SerialUSB.println(result,BIN);
-    // Récupération de l'octet B2
-    result = result | SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-    result = result << 8;                 //SerialUSB.println(result,BIN);
-    // Récupération de l'octet B3
-    result = result | SPI.transfer(0x00); //SerialUSB.println(result,BIN);
-
-    // Supression des 4bits de poids forts, conservation des 20bits de données
-    result = 0x0fffff & result; //SerialUSB.println(result,BIN);
-
-    // On termine la conversion en remettant le chip select à l'état haut
-    digitalWrite(CSADC4, HIGH);
-
-    // Renvoie du résultat
-    return (result);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////FONCTION LECTURE SPI ADC5//////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
-long SpiReadChannelADC5(void)
-{
-
-    /**
-     Permet de lire les signaux envoyé par SPI par les ADC :
-
-  */
-    // Variable pour sauvegarder le résultat de la conversion
-    long result = 0;
-
-    digitalWrite(CSADC5, LOW);
-
-    // Attente de la fin de conversion
-    // Observation du passage de MISO à zéro
-    while (MISO == HIGH)
-        ;
-
-    // Récupération des trois octets du résultat
-    // Récupération de l'octet B1
-    result = SPI.transfer(0xff); //SerialUSB.println(result,BIN);
-    result = result << 8;        //SerialUSB.println(result,BIN);
-    // Récupération de l'octet B2
-    result = result | SPI.transfer(0xff); //SerialUSB.println(result,BIN);
-    result = result << 8;                 //SerialUSB.println(result,BIN);
-    // Récupération de l'octet B3
-    result = result | SPI.transfer(0xff); //SerialUSB.println(result,BIN);
-
-    // Supression des 4bits de poids forts, conservation des 20bits de données
-    result = 0x0fffff & result; //SerialUSB.println(result,BIN);
-
-    // On termine la conversion en remettant le chip select à l'état haut
-    digitalWrite(CSADC5, HIGH);
-    // Renvoie du résultat
-    return (result);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////FONCTION LECTURE SPI ADC6//////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
-long SpiReadChannelADC6(void)
-{
-
-    /**
-     Permet de lire les signaux envoyé par SPI par les ADC : 
-
-  */
-    // Variable pour sauvegarder le résultat de la conversion
-    long result = 0;
-
-    digitalWrite(CSADC6, LOW);
-
-    // Attente de la fin de conversion
-    // Observation du passage de MISO à zéro
-    while (MISO == HIGH)
-        ;
-
-    // Récupération des trois octets du résultat
-    // Récupération de l'octet B1
-    result = SPI.transfer(0xff); //SerialUSB.println(result,BIN);
-    result = result << 8;        //SerialUSB.println(result,BIN);
-    // Récupération de l'octet B2
-    result = result | SPI.transfer(0xff); //SerialUSB.println(result,BIN);
-    result = result << 8;                 //SerialUSB.println(result,BIN);
-    // Récupération de l'octet B3
-    result = result | SPI.transfer(0xff); //SerialUSB.println(result,BIN);
-
-    // Supression des 4bits de poids forts, conservation des 20bits de données
-    result = 0x0fffff & result; //SerialUSB.println(result,BIN);
-
-    // On termine la conversion en remettant le chip select à l'état haut
-    digitalWrite(CSADC6, HIGH);
-    // Renvoie du résultat
-    return (result);
-}
 
 /**************************************************************************
                         Fonction pour vérifier le nombre de Cycle
@@ -1684,10 +1335,10 @@ void Dut::assignation_valeurs_converties()
     // set_uA(conversion_channel_microA(get_channel_UI()));
     // set_Vin(conversion_channel_power_in(get_channel_PWR_DUT()));
 
-    A = conversion_channel_A(channel_I);
-    mA = conversion_channel_mA(channel_MI);
-    uA = conversion_channel_microA(channel_UI);
-    Vin = conversion_channel_power_in(channel_PWR_DUT);
+    A = conversion_channel_A(get_channel_I());
+    mA = conversion_channel_mA(get_channel_MI());
+    uA = conversion_channel_microA(get_channel_UI());
+    Vin = conversion_channel_power_in(get_channel_PWR_DUT());
 
     // if(uA<3){
     //     uA = 0;
@@ -1821,6 +1472,21 @@ void Dut::checkUniteAdc()
     //return unite;
 }
 
+void Dut::reassemblage_valeurs_lue()
+{
+    long channelUI, channelMI, channelI, channelPwrDut;
+    channelUI = channel_MI;
+    channelMI = channel_I;
+    channelI = channel_PWR_DUT;
+    channelPwrDut = channel_PWR_DUT;
+
+    channel_UI = channelUI;
+    channel_MI = channelMI;
+    channel_I = channelI;
+    channel_PWR_DUT = channelPwrDut;
+
+}
+
 void state_CSADC(int etat)
 /**
    Les 4 ADC du banc ont un multiplexeur integré, cette fonction nous permet de le set pour récuperer un channel en particulier de l'ADC
@@ -1901,75 +1567,66 @@ void HANDLER_ACC()
     }
 }
 
-// =================================================================
-// SpiRead() -- read 4 bytes from LTC2440 chip via SPI, return Volts
-// =================================================================
 
-// long SpiRead(int CS_ADC, int channel_adc)
-// {
-//     int channel[8] = {0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F}; //
-//     int CSADC_channel[6] = {CSADC1, CSADC2, CSADC3, CSADC4, CSADC5, CSADC6};
 
-//     for (int i = 0; i < 6; i++)
-//     {
-//         digitalWrite(CSADC_channel[i], HIGH);
-//     }
+/////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////FONCTION SELECTION CHANNEL ////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+/*Typically, CSADC and CSADC are tied together
+    SCK and CLK are tied together and driven with a common clock signal.
 
-//     for (int i = 0; i < 6; i++)
-//     {
-//         digitalWrite(CSADC_channel[i], LOW);
-//     }
+    During channel selection, CSADC is HIGH. Data is shifted into the DIN pin on
+    the rising edge of CLK, see Figure 4. Table 3 shows the bit combinations for
+    channel selection.
 
-//     for (int i = 0; i < 6; i++)
-//     {
-//         digitalWrite(CSADC_channel[i], HIGH);
-//     }
-//     SPI.transfer(channel[channel_adc]);
+    In order to enable the multiplexer output, CSADC must be pulled LOW.
+    The multiplexer should be programmed after the previous conversion is complete.
 
-//     delay(150);
+    In order to guarantee the conversion is complete, the multiplexer addressing should
+    be delayed a minimum tCONV (approximately 133ms for a 60Hz notch) after the data out is read.
+    While the multiplexer is being programmed, the ADC is in the sleep state.
+    Once the ADC addressing is complete, the data from the preceding conversion can be read.
+    A new conversion cycle is initiated following the data read cycle with the analog
+    input tied to the newly selected channel.
+*/
 
-//     digitalWrite(CSADC_channel[CS_ADC], LOW);
-
-//     long result = 0;
-
-//     result = SPI.transfer(0x00);
-//     result = result << 8;
-//     // Récupération de l'octet B2
-//     result = result | SPI.transfer(0x00);
-//     result = result << 8;
-//     // Récupération de l'octet B3
-//     result = result | SPI.transfer(0x00);
-
-//     // Supression des 4bits de poids forts, conservation des 20bits de données
-//     result = 0x0fffff & result;
-
-//     for (int i = 0; i < 6; i++)
-//     {
-//         digitalWrite(CSADC_channel[i], HIGH);
-//     }
-// }
-
+/**
+     * A single CS signal drives both the multiplexer CSMUX and converter CSADC inputs. 
+     * This common signal is used to monitor and control the state of the conversion as well as enable the channel selection.
+     * 
+     * The serial clock mode is selected on the falling edge of CSADC. To select the external serial clock mode, 
+     * the serial clock pin (SCK) must be LOW during each CSADC falling edge.
+     * 
+     * The serial data output pin (SDO) is Hi-Z as long as CSADC is HIGH. At any time during the conversion cycle, 
+     * CSADC may be pulled LOW in order to monitor the state of the converter. While CSADC is LOW, EOC is output to the SDO pin. 
+     * EOC = 1 while a conversion is in progress and EOC = 0 if the device is in the sleep state. Independent of CSADC, the device automatically enters 
+     * the sleep state once the conversion is complete. While the device is in the sleep state and CSADC is HIGH, the power consumption is reduced an order of magnitude.
+     * 
+     * While the device is in the sleep state, prior to entering the data output state, the user may program the multiplexer. 
+     * As shown in Figure 13, the multiplexer channel is selected by serial shifting a 4-bit word into the DIN pin on the rising edge of CLK (CLK is tied to SCK). 
+     * The first bit is an enable bit that must be HIGH in order to program a channel. The next three bits determine which channel is selected, see Table 3. 
+     * On the falling edge of CSMUX, the new channel is selected and will be valid for the first conversion performed following the data output state. 
+     * Clock signals applied to the CLK pin while CSMUX is LOW (during the data output state) will have no effect on the channel selection. Furthermore, 
+     * if DIN is held LOW or CLK is held LOW during the sleep state, the channel selection is unchanged.
+     */
 long SpiRead(int CS_ADC, int channel_adc)
 {
     int channel[8] = {0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F}; //
     int CSADC_channel[6] = {CSADC1, CSADC2, CSADC3, CSADC4, CSADC5, CSADC6};
-
-    channel_adc;
 
     digitalWrite(CSADC_channel[CS_ADC], LOW);
     digitalWrite(CSADC_channel[CS_ADC], HIGH);
     SPI.transfer(channel[channel_adc]);
 
     for (int j = 0; j < 24; j++)
-        ; //digitalWrite(CSADC_channel[CS_ADC], LOW);
+        ;
     digitalWrite(CSADC_channel[CS_ADC], HIGH);
 
-    delay(150);
+    delay(133);
     digitalWrite(CSADC_channel[CS_ADC], LOW);
 
     long result = 0;
-    while (MISO == HIGH)
-        ; //tourne dans le vide tant que MISO n'est pas égale à 0
+
     result = SPI.transfer(0x00);
     result = result << 8;
     // Récupération de l'octet B2

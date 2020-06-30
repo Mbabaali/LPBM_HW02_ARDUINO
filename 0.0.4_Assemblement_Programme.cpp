@@ -674,13 +674,6 @@ void loop()
 
     EnvoiTrame(dut1, dut2, dut3, dut4, dut5, dut6);
 
-    // for(int i=0; i<6; i++)
-    // {
-    //     for (int j=0; j<8; j++)
-    //     {
-    //         SpiRead(i, j);
-    //     }
-    // }
 
     Serial.println("\nFin LOOP \n\n\n");
 
