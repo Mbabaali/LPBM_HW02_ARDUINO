@@ -857,6 +857,15 @@ void changerEtatACC(int etat)
     compteur = 0;
 }
 
+void pause_DUT(Dut dut1, Dut dut2, Dut dut3, Dut dut4, Dut dut5, Dut dut6)
+{
+    Dut tableauDeDut[6] = {dut1, dut2, dut3, dut4, dut5, dut6};
+    for (int n = 0; n < 6; n++)
+    {
+        tableauDeDut[n].set_flag_state_power(true);
+    }
+}
+
 /**************************************************************************
                         Fonction pour l'envoi de La trame
   Dernière modification 28/10/2019 à 12h07 par Aslam BARWANE
