@@ -306,6 +306,7 @@ void setup()
 
     // Ouverture du port Serial pour l'affichage console du résultat de la conversion
     Serial.begin(115200);
+    SerialUSB.begin(115200);
 
     SPI.begin();
 
