@@ -731,7 +731,7 @@ float conversion_channel_A(long result)
     double courant_A;
 
     result = result - 384000;
-    courant_A = (result * 0.00000635 * 3);
+    courant_A = (result * 0.000007 * 3);
 
     // Retour de la valeur convertie
     return courant_A;
