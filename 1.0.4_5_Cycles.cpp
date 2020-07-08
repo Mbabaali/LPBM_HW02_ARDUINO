@@ -726,12 +726,27 @@ void HANDLER_CURRENT_MAX()
 //////////////////////////////CONVERSION CHANNEL A///////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 float conversion_channel_A(long result)
+/**
+ * Le composant utilisé pour la mesure de courant en ampère est l'ACS713
+ * Il a une sensibilité en sortie de 185 mV/A
+ * Tension en sortie à vide: Vs_vide = 0.505 V
+ * Valeur de la tension à vide en bits: 320927
+ * Amplification: gain = 3
+ * 
+ * Pour avoir la bonne tension en mesure, il faut retrancher au Vs le Vs_vide
+ */ 
 {
-    // Déclaration de la variable pour la tension
-    double courant_A;
+    double resolution = 1048575;
+    double uMax = 4.098;
+    double gain = 3;
+    double Vs_vide = 0.505;
+    double sensibility = 185;
 
-    result = result - 384000;
-    courant_A = (result * 0.000007 * 3);
+    long Vs_vide_bit = ( (Vs_vide * gain) * resolution) / uMax;
+
+    result = result - Vs_vide_bit;
+    courant_A = result / gain;
+    courant_A = (result * (uMax/resolution));
 
     // Retour de la valeur convertie
     return courant_A;
