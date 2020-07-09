@@ -738,15 +738,15 @@ float conversion_channel_A(long result)
 {
     double resolution = 1048575;
     double uMax = 4.098;
-    double gain = 3;
+    double gain = 3 * 250;
     double Vs_vide = 0.505;
     double sensibility = 185;
 
     long Vs_vide_bit = ( (Vs_vide * gain) * resolution) / uMax;
 
-    result = result - Vs_vide_bit;
-    courant_A = result / gain;
+    result = result - Vs_vide_bit;   
     courant_A = (result * (uMax/resolution));
+    courant_A = result / gain;
 
     // Retour de la valeur convertie
     return courant_A;
