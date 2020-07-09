@@ -1424,7 +1424,7 @@ void Dut::assignation_valeurs_converties()
 
     // On applique le coefficient de correction des valeur
     // Dernière modification 24/10/2019 à 14h24 par Aslam BARWANE
-    correctionValeur();
+    //correctionValeur();
 
     checkUniteAdc();
 
@@ -1550,7 +1550,6 @@ void Dut::test_channel()
 void Dut::correctionValeur()
 {
     mA = mA - 0.35;
-    A = A - 0.35;
 }
 
 /**
@@ -1573,7 +1572,7 @@ void Dut::checkUniteAdc()
     // SerialUSB.print("get_uA(): ");
     // SerialUSB.println(get_uA());
 
-    if (get_A() > 0.5)
+    if (get_A() > 0.8)
     {
         unite = cu_A;
         //SerialUSB.println("adc.A>0.5");
