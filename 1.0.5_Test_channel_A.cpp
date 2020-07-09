@@ -752,13 +752,13 @@ float conversion_channel_A(long result)
     // result = result - 100941;
 
     //result = result - Vs_vide_bit;   
-    SerialUSB.println(result);
+    // SerialUSB.println(result);
     courant_A = (result * (uMax/resolution));
-    SerialUSB.println(courant_A);
+    // SerialUSB.println(courant_A);
     courant_A -= 1.5;
-    SerialUSB.println(courant_A);
+    // SerialUSB.println(courant_A);
     courant_A = courant_A / gain;
-    SerialUSB.println(courant_A);
+    // SerialUSB.println(courant_A);
     courant_A = courant_A / sensibility;
     SerialUSB.println(courant_A);
 
