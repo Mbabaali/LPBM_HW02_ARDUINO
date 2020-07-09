@@ -667,13 +667,13 @@ void loop()
     dut5.reassemblage_valeurs_lue();
     dut6.reassemblage_valeurs_lue();
 
-    // dut1.test_channel();
-    // dut2.test_channel();
-    // dut3.test_channel();
-    // dut4.test_channel();
-    // dut5.test_channel();
-    // dut6.test_channel();
-    // dutt.test_channel();
+    dut1.test_channel();
+    dut2.test_channel();
+    dut3.test_channel();
+    dut4.test_channel();
+    dut5.test_channel();
+    dut6.test_channel();
+    dutt.test_channel();
 
     dut1.assignation_valeurs_converties();
     dut2.assignation_valeurs_converties();
@@ -682,12 +682,12 @@ void loop()
     dut5.assignation_valeurs_converties();
     dut6.assignation_valeurs_converties();
 
-    // dut1.test_assignation_valeurs_converties();
-    // dut2.test_assignation_valeurs_converties();
-    // dut3.test_assignation_valeurs_converties();
-    // dut4.test_assignation_valeurs_converties();
-    // dut5.test_assignation_valeurs_converties();
-    // dut6.test_assignation_valeurs_converties();
+    dut1.test_assignation_valeurs_converties();
+    dut2.test_assignation_valeurs_converties();
+    dut3.test_assignation_valeurs_converties();
+    dut4.test_assignation_valeurs_converties();
+    dut5.test_assignation_valeurs_converties();
+    dut6.test_assignation_valeurs_converties();
 
     EnvoiTrame(dut1, dut2, dut3, dut4, dut5, dut6);
 
@@ -740,7 +740,8 @@ float conversion_channel_A(long result)
     double uMax = 4.98;
     double gain = 3;
     double Vs_vide = 0.505;
-    double sensibility = 185;
+    double sensibility = 0.185;
+    double courant_A;
 
     long Vs_vide_bit = ( (Vs_vide * gain) * resolution) / uMax;
 
@@ -749,6 +750,7 @@ float conversion_channel_A(long result)
     result = result - Vs_vide_bit;   
     courant_A = (result * (uMax/resolution));
     courant_A = result / gain;
+    courant_A = courant_A / sensibility;
 
     // Retour de la valeur convertie
     return courant_A;
@@ -1456,6 +1458,32 @@ void Dut::test_assignation_valeurs_converties()
 
     Serial.print("valeur dans UNITE : ");
     Serial.println(get_unite());
+
+
+
+    // Dernière modification 24/10/2019 à 13h15 par Aslam BARWANE
+    SerialUSB.print("\n\n****** TEST VALEURS LUES ET CONVERTIES dans le ");
+
+    SerialUSB.print(get_name());
+    SerialUSB.println(" ******");
+
+    SerialUSB.print("valeur dans uA : ");
+    SerialUSB.println(get_uA());
+
+    SerialUSB.print("valeur dans mA : ");
+    SerialUSB.println(get_mA());
+
+    SerialUSB.print("valeur dans A : ");
+    SerialUSB.println(get_A());
+
+    SerialUSB.print("valeur dans Vin : ");
+    SerialUSB.println(get_Vin());
+
+    SerialUSB.println("\tFin de lecture des assignastion des valeur du ");
+    SerialUSB.print(get_name());
+
+    SerialUSB.print("valeur dans UNITE : ");
+    SerialUSB.println(get_unite());
 }
 
 void Dut::test_channel()
@@ -1482,6 +1510,30 @@ void Dut::test_channel()
 
     Serial.print("\tFIN TEST DES VALEURS LUES DANS LES CHANNEL du ");
     Serial.print(get_name());
+
+
+    //Dernière modification 24/10/2019 à 13h15 par Aslam BARWANE
+    SerialUSB.print("\n\n****** TEST DES VALEURS LUES DANS LES CHANNEL DU ");
+    SerialUSB.print(nom);
+    SerialUSB.println(" ******");
+
+    SerialUSB.print("channel_UI :");
+    SerialUSB.println(get_channel_UI());
+
+    SerialUSB.print("channel_MI : ");
+    SerialUSB.println(get_channel_MI());
+
+    SerialUSB.print("channel_I : ");
+    SerialUSB.println(get_channel_I());
+
+    SerialUSB.print("channel_NO : ");
+    SerialUSB.println(get_channel_NO());
+
+    SerialUSB.print("channel_PWR_DUT : ");
+    SerialUSB.println(get_channel_PWR_DUT());
+
+    SerialUSB.print("\tFIN TEST DES VALEURS LUES DANS LES CHANNEL du ");
+    SerialUSB.print(get_name());
 }
 
 /*Methode pour la mise en place d'un coefficient correcteur du mA et de l'A
