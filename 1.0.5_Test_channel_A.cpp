@@ -748,7 +748,7 @@ float conversion_channel_A(long result)
     // result = result - 100941;
 
     //result = result - Vs_vide_bit;   
-    courant_A = (courant_A * (uMax/resolution));
+    courant_A = (result * (uMax/resolution));
     courant_A = courant_A / gain;
     courant_A = courant_A / sensibility;
 
