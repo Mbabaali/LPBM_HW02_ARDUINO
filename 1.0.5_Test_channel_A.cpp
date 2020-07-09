@@ -623,6 +623,11 @@ void loop()
         }
     }
 
+    if(cycle[0].time_awake == 0 && cycle[0].time_sleep == 0)
+    {
+        pause_DUT(dut1, dut2, dut3, dut4, dut5, dut6);
+    }
+
 
     dut1.set_channel_UI(SpiRead(0, 0));
     dut2.set_channel_UI(SpiRead(1, 0));
@@ -682,9 +687,6 @@ void loop()
     dut5.assignation_valeurs_converties();
     dut6.assignation_valeurs_converties();
 
-    SerialUSB.print("Consommation totale: ");
-    double conso = dut1.get_A() + dut6.get_A() + dut2.get_A() + dut3.get_A() + dut4.get_A() + dut5.get_A() ;
-    SerialUSB.println(conso);
 
     // dut1.test_assignation_valeurs_converties();
     // dut2.test_assignation_valeurs_converties();
@@ -751,16 +753,10 @@ float conversion_channel_A(long result)
 
     // result = result - 100941;
 
-    //result = result - Vs_vide_bit;   
-    // SerialUSB.println(result);
     courant_A = (result * (uMax/resolution));
-    // SerialUSB.println(courant_A);
     courant_A -= 1.5;
-    // SerialUSB.println(courant_A);
     courant_A = courant_A / gain;
-    // SerialUSB.println(courant_A);
     courant_A = courant_A / sensibility;
-    SerialUSB.println(courant_A);
 
     // Retour de la valeur convertie
     return courant_A;
