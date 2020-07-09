@@ -729,7 +729,7 @@ float conversion_channel_A(long result)
 /**
  * Le composant utilisé pour la mesure de courant en ampère est l'ACS713
  * Il a une sensibilité en sortie de 185 mV/A
- * Tension en sortie à vide: Vs_vide = 0.505 V
+ * Tension en sortie à vide: Vs_vide = 0.505 V qui vaut 1.5V aprés l'amplification de 3
  * Valeur de la tension à vide en bits: 320927
  * Amplification: gain = 3
  * 
@@ -748,10 +748,15 @@ float conversion_channel_A(long result)
     // result = result - 100941;
 
     //result = result - Vs_vide_bit;   
+    SerialUSB.println(result);
     courant_A = (result * (uMax/resolution));
+    SerialUSB.println(courant_A);
     courant_A -= 1.5;
+    SerialUSB.println(courant_A);
     courant_A = courant_A / gain;
+    SerialUSB.println(courant_A);
     courant_A = courant_A / sensibility;
+    SerialUSB.println(courant_A);
 
     // Retour de la valeur convertie
     return courant_A;
