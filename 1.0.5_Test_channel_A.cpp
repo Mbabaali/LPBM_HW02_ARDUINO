@@ -1515,7 +1515,7 @@ void Dut::test_channel()
     Serial.println(get_channel_PWR_DUT());
 
     Serial.print("\tFIN TEST DES VALEURS LUES DANS LES CHANNEL du ");
-    Serial.print(get_name());
+    Serial.println(get_name());
 
 
     //Dernière modification 24/10/2019 à 13h15 par Aslam BARWANE
@@ -1539,7 +1539,7 @@ void Dut::test_channel()
     SerialUSB.println(get_channel_PWR_DUT());
 
     SerialUSB.print("\tFIN TEST DES VALEURS LUES DANS LES CHANNEL du ");
-    SerialUSB.print(get_name());
+    SerialUSB.println(get_name());
 }
 
 /*Methode pour la mise en place d'un coefficient correcteur du mA et de l'A
