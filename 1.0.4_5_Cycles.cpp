@@ -737,7 +737,7 @@ float conversion_channel_A(long result)
  */ 
 {
     double resolution = 1048575;
-    double uMax = 4.098;
+    double uMax = 4.98;
     double gain = 3 * 250;
     double Vs_vide = 0.505;
     double sensibility = 185;
