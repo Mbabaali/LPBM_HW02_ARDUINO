@@ -682,6 +682,9 @@ void loop()
     dut5.assignation_valeurs_converties();
     dut6.assignation_valeurs_converties();
 
+    SerialUSB.print("Consommation totale: ");
+    SerialUSB.print(dut1.get_A() + dut6.get_A() + dut2.get_A()+ dut3.get_A()+ dut4.get_A()+ dut5.get_A());
+
     // dut1.test_assignation_valeurs_converties();
     // dut2.test_assignation_valeurs_converties();
     // dut3.test_assignation_valeurs_converties();
