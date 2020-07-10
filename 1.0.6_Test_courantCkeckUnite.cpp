@@ -699,7 +699,7 @@ void HANDLER_CURRENT_MAX()
 
     //Serial.println("\t*******  Handler  1*********");
     if (FLAG_CURRENT_MAX_DUT1 == true || FLAG_CURRENT_MAX_DUT2 == true || FLAG_CURRENT_MAX_DUT3 == true ||
-        FLAG_CURRENT_MAX_DUT4 == true || FLAG_CURRENT_MAX_DUT5 == true || FLAG_CURRENT_MAX_DUT6 == true || )
+        FLAG_CURRENT_MAX_DUT4 == true || FLAG_CURRENT_MAX_DUT5 == true || FLAG_CURRENT_MAX_DUT6 == true )//|| )
         //(cycle[0].time_awake == 0 && cycle[0].time_sleep == 0))
     {
         digitalWrite(CMD_PWR_DUT1, LOW);
