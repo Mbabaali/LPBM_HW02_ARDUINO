@@ -1568,7 +1568,7 @@ void Dut::checkUniteAdc()
     else if (get_mA() >= 1.4)
     {
         unite = cu_mA;
-        SerialUSB.printl("unite : mA");
+        SerialUSB.println("unite : mA");
     }
     else if (get_mA() < 1.4)
     {
