@@ -372,7 +372,7 @@ void setup()
     while (!SerialUSB)
     {
         // SerialUSB.println("wait for serial port to connect. Needed for native USB"); //
-        Serial.println("wait for serial port to connect. Needed for native USB"); //
+        // Serial.println("wait for serial port to connect. Needed for native USB"); //
     }
 
     //Serial.println("Designed and developed by Robin Carriou & Vincent Bougouin");
@@ -383,7 +383,7 @@ void setup()
 /////////////////////////////////////////////////////////////////////////////////////////
 void loop()
 {
-    Serial.println("\n\n\t*** DEBUT BOUCLE LOOP ***");
+    // Serial.println("\n\n\t*** DEBUT BOUCLE LOOP ***");
     // SerialUSB.println("\n\n\t*** DEBUT BOUCLE LOOP USB***");
 
     Dut dut1("DUT 1");
@@ -419,7 +419,7 @@ void loop()
 
     boolean quitter = false;
 
-       while (SerialUSB.available() && !finReception)
+    while (SerialUSB.available() && !finReception)
     {
         /**
      * Cette boucle s'active si l'arduino commence à recevoir des données sur son port uart (données envoyé par la pi). on receptionne les données sous forme 
@@ -533,21 +533,21 @@ void loop()
                 COURANT_MAX.amax_str = inputString.substring(72, 75);
                 COURANT_MAX.amax = COURANT_MAX.amax_str.toFloat();
 
-                Serial.print("cycle[0].nb_rep_str: ");
-                Serial.println(cycle[0].nb_rep_str);
-                Serial.print("cycle[1].nb_rep_str ");
-                Serial.println(cycle[1].nb_rep_str);
-                Serial.print("cycle[2].nb_rep_str ");
-                Serial.println(cycle[2].nb_rep_str);
-                Serial.print("cycle[3].nb_rep_str ");
-                Serial.println(cycle[3].nb_rep_str);
-                Serial.print("cycle[4].nb_rep_str ");
-                Serial.println(cycle[4].nb_rep_str);
+                // Serial.print("cycle[0].nb_rep_str: ");
+                // Serial.println(cycle[0].nb_rep_str);
+                // Serial.print("cycle[1].nb_rep_str ");
+                // Serial.println(cycle[1].nb_rep_str);
+                // Serial.print("cycle[2].nb_rep_str ");
+                // Serial.println(cycle[2].nb_rep_str);
+                // Serial.print("cycle[3].nb_rep_str ");
+                // Serial.println(cycle[3].nb_rep_str);
+                // Serial.print("cycle[4].nb_rep_str ");
+                // Serial.println(cycle[4].nb_rep_str);
 
-                Serial.print("\n\nLa valeur lu du courant max vaut: ");
-                Serial.println(COURANT_MAX.amax_str);
-                Serial.print("Amperage max vaut: ");
-                Serial.println(COURANT_MAX.amax);
+                // Serial.print("\n\nLa valeur lu du courant max vaut: ");
+                // Serial.println(COURANT_MAX.amax_str);
+                // Serial.print("Amperage max vaut: ");
+                // Serial.println(COURANT_MAX.amax);
 
                 //DEBUG//
                 /*
@@ -594,7 +594,7 @@ void loop()
                  SerialUSB.println(nb_cycle);*/
                 uploadconfig = true;
                 SerialUSB.print("ok\n");
-                Serial.println("OK TRANSMISSION");
+                // Serial.println("OK TRANSMISSION");
                 break;
 
             case 'p':
@@ -623,8 +623,6 @@ void loop()
         }
     }
 
-
-
     dut1.set_channel_UI(SpiRead(0, 0));
     dut2.set_channel_UI(SpiRead(1, 0));
     dut3.set_channel_UI(SpiRead(2, 0));
@@ -645,7 +643,7 @@ void loop()
     dut4.set_channel_I(SpiRead(3, 2));
     dut5.set_channel_I(SpiRead(4, 2));
     dut6.set_channel_I(SpiRead(5, 2));
-    
+
     dut1.set_channel_PWR_DUT(SpiRead(0, 3));
     dut2.set_channel_PWR_DUT(SpiRead(1, 3));
     dut3.set_channel_PWR_DUT(SpiRead(2, 3));
@@ -659,7 +657,6 @@ void loop()
     dut4.set_channel_NO(SpiRead(3, 4));
     dut5.set_channel_NO(SpiRead(4, 4));
     dut6.set_channel_NO(SpiRead(5, 4));
-
 
     dut1.reassemblage_valeurs_lue();
     dut2.reassemblage_valeurs_lue();
@@ -683,7 +680,6 @@ void loop()
     dut5.assignation_valeurs_converties();
     dut6.assignation_valeurs_converties();
 
-
     // dut1.test_assignation_valeurs_converties();
     // dut2.test_assignation_valeurs_converties();
     // dut3.test_assignation_valeurs_converties();
@@ -693,9 +689,9 @@ void loop()
 
     EnvoiTrame(dut1, dut2, dut3, dut4, dut5, dut6);
 
-    Serial.println("\nFin LOOP \n\n\n");
+    // Serial.println("\nFin LOOP \n\n\n");
 
-    delay(50);
+    // delay(50);
 }
 
 void HANDLER_CURRENT_MAX()
@@ -704,7 +700,7 @@ void HANDLER_CURRENT_MAX()
     //Serial.println("\t*******  Handler  1*********");
     if (FLAG_CURRENT_MAX_DUT1 == true || FLAG_CURRENT_MAX_DUT2 == true || FLAG_CURRENT_MAX_DUT3 == true ||
         FLAG_CURRENT_MAX_DUT4 == true || FLAG_CURRENT_MAX_DUT5 == true || FLAG_CURRENT_MAX_DUT6 == true ||
-        (cycle[0].time_awake == 0 && cycle[0].time_sleep == 0) ) 
+        (cycle[0].time_awake == 0 && cycle[0].time_sleep == 0))
     {
         digitalWrite(CMD_PWR_DUT1, LOW);
         digitalWrite(CMD_PWR_DUT2, LOW);
@@ -737,7 +733,7 @@ float conversion_channel_A(long result)
  * Amplification: gain = 3
  * 
  * Pour avoir la bonne tension en mesure, il faut retrancher au Vs le Vs_vide
- */ 
+ */
 {
     double resolution = 1048575;
     double uMax = 4.098;
@@ -746,11 +742,11 @@ float conversion_channel_A(long result)
     double sensibility = 0.185;
     double courant_A;
 
-    long Vs_vide_bit = ( (Vs_vide * gain) * resolution) / uMax;
+    long Vs_vide_bit = ((Vs_vide * gain) * resolution) / uMax;
 
     // result = result - 100941;
 
-    courant_A = (result * (uMax/resolution));
+    courant_A = (result * (uMax / resolution));
     courant_A -= 1.5;
     courant_A = courant_A / gain;
     courant_A = courant_A / sensibility;
@@ -772,7 +768,7 @@ float conversion_channel_mA(long result)
     double span = 0.00000390625; //(uMax/resolution);
     int gain = 250 * 3;
 
-    courant_mA = (result * (uMax/resolution));
+    courant_mA = (result * (uMax / resolution));
 
     courant_mA = (courant_mA * 1000) / (resistanceShunt * gain);
     // Retour de la valeur convertie
@@ -791,9 +787,8 @@ float conversion_channel_microA(long result)
     double uMax = 4.098;
     double span = 0.00000390625; //(uMax/resolution);
     int gain = 250 * 3;
- 
 
-    courant_microA = (result * (uMax/resolution));
+    courant_microA = (result * (uMax / resolution));
     courant_microA = (courant_microA * 1000000) / (resistanceShunt * gain);
 
     // Retour de la valeur convertie     0.00000
@@ -810,7 +805,7 @@ float conversion_channel_power_in(long result)
     double resolution = 1048576;
     double uMax = 4.098;
 
-    power_in = (result * (uMax/resolution));
+    power_in = (result * (uMax / resolution));
 
     // Retour de la valeur convertie
     return power_in;
@@ -826,12 +821,11 @@ float conversion_channel_power_out(long result)
     double resolution = 1048576;
     double uMax = 4.098;
 
-    power_out = (result * (uMax/resolution));
+    power_out = (result * (uMax / resolution));
 
     // Retour de la valeur convertie
     return power_out;
 }
-
 
 /**************************************************************************
                         Fonction pour vérifier le nombre de Cycle
@@ -1462,8 +1456,6 @@ void Dut::test_assignation_valeurs_converties()
     Serial.print("valeur dans UNITE : ");
     Serial.println(get_unite());
 
-
-
     // Dernière modification 24/10/2019 à 13h15 par Aslam BARWANE
     SerialUSB.print("\n\n****** TEST VALEURS LUES ET CONVERTIES dans le ");
 
@@ -1513,7 +1505,6 @@ void Dut::test_channel()
 
     Serial.print("\tFIN TEST DES VALEURS LUES DANS LES CHANNEL du ");
     Serial.println(get_name());
-
 
     //Dernière modification 24/10/2019 à 13h15 par Aslam BARWANE
     SerialUSB.print("\n\n****** TEST DES VALEURS LUES DANS LES CHANNEL DU ");
@@ -1608,7 +1599,6 @@ void Dut::reassemblage_valeurs_lue()
     channel_MI = channelMI;
     channel_I = channelI;
     channel_PWR_DUT = channelPwrDut;
-
 }
 
 void state_CSADC(int etat)
@@ -1690,8 +1680,6 @@ void HANDLER_ACC()
         }
     }
 }
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////FONCTION SELECTION CHANNEL ////////////////////////////////
