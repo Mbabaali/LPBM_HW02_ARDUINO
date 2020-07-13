@@ -1563,27 +1563,28 @@ void Dut::checkUniteAdc()
     if (get_A() > 0.5)
     {
         unite = cu_A;
-        SerialUSB.println("adc.A>0.5");
+        //SerialUSB.println("adc.A>0.5");
     }
     else if (get_mA() >= 1.4)
     {
         unite = cu_mA;
-        SerialUSB.println("unite : mA");
-        SerialUSB.println(adc.mA);
+        //SerialUSB.println("unite : mA");
+        //SerialUSB.println(adc.mA);
     }
     else if (get_mA() < 1.4)
     {
         unite = cu_uA;
-        SerialUSB.println("unite : µA");
-        SerialUSB.println("unite : uA");
+        //SerialUSB.println("unite : µA");
+        //SerialUSB.println("unite : uA");
     }
     else
     {
         unite = unknown;
-        SerialUSB.println("unknown   (checkUniteAdc)");
+        //SerialUSB.println("unknown   (checkUniteAdc)");
     }
-    SerialUSB.print("Unite: ");
-    SerialUSB.println(unite);
+    // SerialUSB.print("Unite: ");
+    // SerialUSB.println(unite);
+    //return unite;
 }
 
 void Dut::reassemblage_valeurs_lue()
