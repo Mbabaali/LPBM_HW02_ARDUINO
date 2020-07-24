@@ -623,6 +623,7 @@ void loop()
         }
     }
 
+
     dut1.set_channel_UI(SpiRead(0, 0));
     dut2.set_channel_UI(SpiRead(1, 0));
     dut3.set_channel_UI(SpiRead(2, 0));
@@ -700,7 +701,7 @@ void HANDLER_CURRENT_MAX()
     //Serial.println("\t*******  Handler  1*********");
     if (FLAG_CURRENT_MAX_DUT1 == true || FLAG_CURRENT_MAX_DUT2 == true || FLAG_CURRENT_MAX_DUT3 == true ||
         FLAG_CURRENT_MAX_DUT4 == true || FLAG_CURRENT_MAX_DUT5 == true || FLAG_CURRENT_MAX_DUT6 == true || 
-        (cycle[0].time_awake == 0 && cycle[0].time_sleep == 0))
+       (cycle[0].time_awake == 0 && cycle[0].time_sleep == 0))
     {
         digitalWrite(CMD_PWR_DUT1, LOW);
         digitalWrite(CMD_PWR_DUT2, LOW);
@@ -762,7 +763,7 @@ float conversion_channel_mA(long result)
 {
     double courant_mA = 0;
 
-    double resolution = 1048576;
+    double resolution = 1048575;
     double resistanceShunt = 0.020;
     double uMax = 4.098;
     double span = 0.00000390625; //(uMax/resolution);
@@ -782,7 +783,7 @@ float conversion_channel_microA(long result)
 {
     double courant_microA;
 
-    double resolution = 1048576;
+    double resolution = 1048575;
     double resistanceShunt = 10;
     double uMax = 4.098;
     double span = 0.00000390625; //(uMax/resolution);
@@ -1405,7 +1406,14 @@ void Dut::assignation_valeurs_converties()
     // set_Vin(conversion_channel_power_in(get_channel_PWR_DUT()));
 
     A = conversion_channel_A(get_channel_I());
-    mA = conversion_channel_mA(get_channel_MI());
+    
+    if(A>0.2 || A<0.7)
+    {
+        mA = A*1000;
+    }
+    else{
+        mA = 0;
+    }
     uA = conversion_channel_microA(get_channel_UI());
     Vin = conversion_channel_power_in(get_channel_PWR_DUT());
 
