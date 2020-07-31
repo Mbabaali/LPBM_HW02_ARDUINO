@@ -1406,7 +1406,13 @@ void Dut::assignation_valeurs_converties()
     // set_Vin(conversion_channel_power_in(get_channel_PWR_DUT()));
 
     A = conversion_channel_A(get_channel_I());
-    mA = conversion_channel_mA(get_channel_MI());
+    if(A>0.2 || A<0.7)
+    {
+        mA = A*1000;
+    }
+    else{
+        mA = 0;
+    }
     uA = conversion_channel_microA(get_channel_UI());
     Vin = conversion_channel_power_in(get_channel_PWR_DUT());
 
@@ -1416,7 +1422,7 @@ void Dut::assignation_valeurs_converties()
 
     // On applique le coefficient de correction des valeur
     // Dernière modification 24/10/2019 à 14h24 par Aslam BARWANE
-    correctionValeur();
+    //correctionValeur();
 
     checkUniteAdc();
 

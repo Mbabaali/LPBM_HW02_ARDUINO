@@ -765,7 +765,7 @@ float conversion_channel_mA(long result)
 
     double resolution = 1048575;
     double resistanceShunt = 0.020;
-    double uMax = 4.098;
+    double uMax = 4.98;
     double span = 0.00000390625; //(uMax/resolution);
     int gain = 250 * 3;
 
@@ -785,7 +785,7 @@ float conversion_channel_microA(long result)
 
     double resolution = 1048575;
     double resistanceShunt = 10;
-    double uMax = 4.098;
+    double uMax = 4.98;
     double span = 0.00000390625; //(uMax/resolution);
     int gain = 250 * 3;
 
@@ -803,8 +803,8 @@ float conversion_channel_power_in(long result)
 {
     // Déclaration de la variable pour la tension
     double power_in;
-    double resolution = 1048576;
-    double uMax = 4.098;
+    double resolution = 1048575;
+    double uMax = 4.98;
 
     power_in = (result * (uMax / resolution));
 
